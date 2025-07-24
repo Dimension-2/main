@@ -255,6 +255,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_close($stmt);
         }
     }
+    // Append a status parameter to the URL to indicate content management action
+    // This helps in keeping the modal open after a form submission within it.
+    header("Location: admin.php?status=content_managed&selected_main_heading=" . urlencode($selected_main_heading) . "&selected_key=" . urlencode($selected_key));
+    exit();
 }
 
 
@@ -278,6 +282,29 @@ if (!empty($selected_key) && empty($selected_main_heading)) {
 if (empty($selected_main_heading) && empty($allContentKeys)) {
     // Optionally, you could fetch keys for the first main heading, or just leave it blank
     // For now, let's leave it blank and rely on JS to populate on first selection
+}
+
+// Restore state from GET parameters after a content management action
+if (isset($_GET['status']) && $_GET['status'] === 'content_managed') {
+    if (isset($_GET['selected_main_heading'])) {
+        $selected_main_heading = urldecode($_GET['selected_main_heading']);
+        $allContentKeys = getContentKeysByMainHeading($conn, $selected_main_heading);
+    }
+    if (isset($_GET['selected_key'])) {
+        $selected_key = urldecode($_GET['selected_key']);
+        // Fetch current content for the selected key
+        $sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $selected_key);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                mysqli_stmt_bind_result($stmt, $current_content);
+                mysqli_stmt_fetch($stmt);
+            }
+            mysqli_stmt_close($stmt);
+        }
+    }
 }
 
 
@@ -306,79 +333,7 @@ mysqli_close($conn);
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin-styles.css">
-    <style>
-        /* Basic styling for content form and history table */
-        body { font: 14px sans-serif; background-color: #f8f9fa; } /* Added from login.php for consistency */
-        .wrapper { width: 90%; margin: 50px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); } /* Adjusted width for dashboard */
-        .content-management-section {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            margin-top: 30px;
-        }
-        .content-management-section h2 {
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        #currentContentDisplay {
-            min-height: 80px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            word-wrap: break-word; /* Ensure long text wraps */
-        }
-        .history-table-container {
-            margin-top: 40px;
-        }
-        .history-table-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .history-table-container th, .history-table-container td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-        .history-table-container th {
-            background-color: #f2f2f2;
-        }
-        .btn-redo {
-            padding: 5px 10px;
-            font-size: 0.85em;
-        }
-        /* Style for the second dropdown, initially hidden */
-        #contentKeySelectGroup {
-            display: none; /* Hidden by default until a main heading is selected */
-        }
-
-        /* --- NEW CSS FOR SLIDE-AWAY MESSAGE (COPIED FROM login.php) --- */
-        .alert.slide-fade-out {
-            max-height: 150px; /* A reasonable starting height for the alert */
-            opacity: 1;
-            overflow: hidden; /* Ensures content doesn't spill during height animation */
-            padding: 1rem 1.25rem; /* Standard Bootstrap alert padding */
-            margin-bottom: 1rem; /* Standard Bootstrap alert margin */
-            /* Define the transition properties for smooth animation */
-            transition: max-height 0.7s ease-out, opacity 0.7s ease-out, padding 0.7s ease-out, margin 0.7s ease-out;
-        }
-
-        .alert.slide-fade-out.hidden {
-            max-height: 0; /* Collapse height */
-            opacity: 0; /* Fade out */
-            padding-top: 0;
-            padding-bottom: 0;
-            margin-top: 0;
-            margin-bottom: 0;
-            border: 0; /* Remove border when collapsed */
-        }
-        /* --- END NEW CSS --- */
-    </style>
+    <link rel="stylesheet" href="../css/admin-css.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -393,10 +348,13 @@ mysqli_close($conn);
                         <a class="nav-link active" aria-current="page" href="admin.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#content-management-section">Manage Content</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#contentManagementModal">Manage Content</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Manage Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Site Settings</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php">Logout</a> </li>
@@ -434,7 +392,9 @@ mysqli_close($conn);
                     <div class="card-body">
                         <h5 class="card-title">Content Management</h5>
                         <p class="card-text">Manage headings,Paragraphs.</p>
-                        <a href="#content-management-section" class="btn btn-success">Go to Content</a>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#contentManagementModal">
+                            Go to Content
+                        </button>
                     </div>
                 </div>
             </div>
@@ -448,96 +408,109 @@ mysqli_close($conn);
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="content-management-section" class="content-management-section mt-5">
-            <h2>Manage Website Content</h2>
-            <form method="post" action="admin.php">
-                <div class="form-group">
-                    <label for="mainHeadingSelect">Select Main Section:</label>
-                    <select class="form-select" id="mainHeadingSelect" name="main_heading_select" required>
-                        <option value="">-- Select a Section --</option>
-                        <?php foreach ($allMainHeadings as $heading): ?>
-                            <option value="<?php echo htmlspecialchars($heading); ?>" <?php echo ($selected_main_heading == $heading) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($heading); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+    <div class="modal fade" id="contentManagementModal" tabindex="-1" aria-labelledby="contentManagementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl"> <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contentManagementModalLabel">Manage Website Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body">
+                    <div id="content-management-section" class="content-management-section mt-1">
+                        <h2>Manage Website Content</h2>
+                        <form method="post" action="admin.php">
+                            <div class="form-group">
+                                <label for="mainHeadingSelect">Select Main Section:</label>
+                                <select class="form-select" id="mainHeadingSelect" name="main_heading_select" required>
+                                    <option value="">-- Select a Section --</option>
+                                    <?php foreach ($allMainHeadings as $heading): ?>
+                                        <option value="<?php echo htmlspecialchars($heading); ?>" <?php echo ($selected_main_heading == $heading) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($heading); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
 
-                <div class="form-group" id="contentKeySelectGroup" style="<?php echo !empty($selected_main_heading) ? 'display: block;' : 'display: none;'; ?>">
-                    <label for="contentKeySelect">Select Content Key:</label>
-                    <select class="form-select" id="contentKeySelect" name="content_key" required>
-                        <option value="">-- Select a Key --</option>
-                        <?php
-                        // Populate this dropdown if a main heading was already selected (e.g., on page reload after update)
-                        if (!empty($selected_main_heading)) {
-                            foreach ($allContentKeys as $key): ?>
-                                <option value="<?php echo htmlspecialchars($key); ?>" <?php echo ($selected_key == $key) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($key); ?>
-                                </option>
-                            <?php endforeach;
-                        }
-                        ?>
-                    </select>
-                </div>
+                            <div class="form-group" id="contentKeySelectGroup" style="<?php echo !empty($selected_main_heading) ? 'display: block;' : 'display: none;'; ?>">
+                                <label for="contentKeySelect">Select Content Key:</label>
+                                <select class="form-select" id="contentKeySelect" name="content_key" required>
+                                    <option value="">-- Select a Key --</option>
+                                    <?php
+                                    // Populate this dropdown if a main heading was already selected (e.g., on page reload after update)
+                                    if (!empty($selected_main_heading)) {
+                                        foreach ($allContentKeys as $key): ?>
+                                            <option value="<?php echo htmlspecialchars($key); ?>" <?php echo ($selected_key == $key) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($key); ?>
+                                            </option>
+                                        <?php endforeach;
+                                    }
+                                    ?>
+                                </select>
+                            </div>
 
-                <div class="form-group">
-                    <label for="currentContent">Current Content:</label>
-                    <div id="currentContentDisplay" class="form-control" style="white-space: pre-wrap; word-wrap: break-word;">
-                        <?php echo htmlspecialchars($current_content); ?>
+                            <div class="form-group">
+                                <label for="currentContent">Current Content:</label>
+                                <div id="currentContentDisplay" class="form-control" style="white-space: pre-wrap; word-wrap: break-word;">
+                                    <?php echo htmlspecialchars($current_content); ?>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="newContentText">Enter New Text:</label>
+                                <textarea class="form-control" id="newContentText" name="new_content_text" rows="5" required><?php echo htmlspecialchars($current_content); ?></textarea>
+                            </div>
+                            <button type="submit" name="update_content" class="btn btn-primary mt-3">Change Text</button>
+                        </form>
+
+                        <div class="history-table-container mt-5">
+                            <h3>Content Change History</h3>
+                            <form method="post" action="admin.php" onsubmit="return confirm('Are you sure you want to clear all history? This action cannot be undone.');">
+                                <button type="submit" name="clear_history" class="btn btn-danger mb-3">Clear All History</button>
+                            </form>
+                            <?php if (empty($content_history)): ?>
+                                <p>No content change history available.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Content Key</th>
+                                                <th>Old Text</th>
+                                                <th>New Text</th>
+                                                <th>Changed By</th>
+                                                <th>Changed At</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($content_history as $entry): ?>
+                                                <tr>
+                                                    <td><?php echo htmlspecialchars($entry['id']); ?></td>
+                                                    <td><?php echo htmlspecialchars($entry['content_key']); ?></td>
+                                                    <td><?php echo htmlspecialchars($entry['old_content_text']); ?></td>
+                                                    <td><?php echo htmlspecialchars($entry['new_content_text']); ?></td>
+                                                    <td><?php echo htmlspecialchars($entry['changed_by']); ?></td>
+                                                    <td><?php echo htmlspecialchars($entry['changed_at']); ?></td>
+                                                    <td>
+                                                        <form method="post" action="admin.php" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to revert this change? This will update the live content.');">
+                                                            <input type="hidden" name="history_id_to_redo" value="<?php echo htmlspecialchars($entry['id']); ?>">
+                                                            <button type="submit" name="redo_last_change" class="btn btn-warning btn-redo">Redo</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="newContentText">Enter New Text:</label>
-                    <textarea class="form-control" id="newContentText" name="new_content_text" rows="5" required><?php echo htmlspecialchars($current_content); ?></textarea>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
-                <button type="submit" name="update_content" class="btn btn-primary mt-3">Change Text</button>
-            </form>
-
-            <div class="history-table-container mt-5">
-                <h3>Content Change History</h3>
-                <form method="post" action="admin.php" onsubmit="return confirm('Are you sure you want to clear all history? This action cannot be undone.');">
-                    <button type="submit" name="clear_history" class="btn btn-danger mb-3">Clear All History</button>
-                </form>
-                <?php if (empty($content_history)): ?>
-                    <p>No content change history available.</p>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Content Key</th>
-                                    <th>Old Text</th>
-                                    <th>New Text</th>
-                                    <th>Changed By</th>
-                                    <th>Changed At</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($content_history as $entry): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($entry['id']); ?></td>
-                                        <td><?php echo htmlspecialchars($entry['content_key']); ?></td>
-                                        <td><?php echo htmlspecialchars($entry['old_content_text']); ?></td>
-                                        <td><?php echo htmlspecialchars($entry['new_content_text']); ?></td>
-                                        <td><?php echo htmlspecialchars($entry['changed_by']); ?></td>
-                                        <td><?php echo htmlspecialchars($entry['changed_at']); ?></td>
-                                        <td>
-                                            <form method="post" action="admin.php" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to revert this change? This will update the live content.');">
-                                                <input type="hidden" name="history_id_to_redo" value="<?php echo htmlspecialchars($entry['id']); ?>">
-                                                <button type="submit" name="redo_last_change" class="btn btn-warning btn-redo">Redo</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
             </div>
-
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -664,6 +637,14 @@ mysqli_close($conn);
                 }, 3000); // 3 seconds before the animation starts
             }
             // --- END NEW JAVASCRIPT BLOCK ---
+
+            // --- NEW JAVASCRIPT FOR OPENING MODAL ON PAGE LOAD IF CONTENT WAS MANAGED ---
+            const contentManagedStatus = urlParams.get('status');
+            if (contentManagedStatus === 'content_managed') {
+                var contentModal = new bootstrap.Modal(document.getElementById('contentManagementModal'));
+                contentModal.show();
+            }
+            // --- END NEW JAVASCRIPT ---
         });
     </script>
 </body>

@@ -1,0 +1,71 @@
+        /* Basic styling for content form and history table */
+        body { font: 14px sans-serif; background-color: #f8f9fa; } /* Added from login.php for consistency */
+        .wrapper { width: 90%; margin: 50px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); } /* Adjusted width for dashboard */
+        .content-management-section {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-top: 30px;
+        }
+        .content-management-section h2 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        #currentContentDisplay {
+            min-height: 80px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-wrap: break-word; /* Ensure long text wraps */
+        }
+        .history-table-container {
+            margin-top: 40px;
+        }
+        .history-table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .history-table-container th, .history-table-container td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .history-table-container th {
+            background-color: #f2f2f2;
+        }
+        .btn-redo {
+            padding: 5px 10px;
+            font-size: 0.85em;
+        }
+        /* Style for the second dropdown, initially hidden */
+        #contentKeySelectGroup {
+            display: none; /* Hidden by default until a main heading is selected */
+        }
+
+        /* --- NEW CSS FOR SLIDE-AWAY MESSAGE (COPIED FROM login.php) --- */
+        .alert.slide-fade-out {
+            max-height: 150px; /* A reasonable starting height for the alert */
+            opacity: 1;
+            overflow: hidden; /* Ensures content doesn't spill during height animation */
+            padding: 1rem 1.25rem; /* Standard Bootstrap alert padding */
+            margin-bottom: 1rem; /* Standard Bootstrap alert margin */
+            /* Define the transition properties for smooth animation */
+            transition: max-height 0.7s ease-out, opacity 0.7s ease-out, padding 0.7s ease-out, margin 0.7s ease-out;
+        }
+
+        .alert.slide-fade-out.hidden {
+            max-height: 0; /* Collapse height */
+            opacity: 0; /* Fade out */
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border: 0; /* Remove border when collapsed */
+        }
+        /* --- END NEW CSS --- */
