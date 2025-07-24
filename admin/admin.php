@@ -74,7 +74,7 @@ $allMainHeadings = getAllMainHeadings($conn);
 $selected_main_heading = '';
 $selected_key = '';
 $current_content = '';
-$message = ''; // To display success or error messages
+$message = ''; // To display success or error messages (from POST operations like update, clear history, redo)
 
 // Initialize content keys based on selection or empty
 $allContentKeys = [];
@@ -308,6 +308,8 @@ mysqli_close($conn);
     <link rel="stylesheet" href="../css/admin-styles.css">
     <style>
         /* Basic styling for content form and history table */
+        body { font: 14px sans-serif; background-color: #f8f9fa; } /* Added from login.php for consistency */
+        .wrapper { width: 90%; margin: 50px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); } /* Adjusted width for dashboard */
         .content-management-section {
             background-color: #fff;
             padding: 25px;
@@ -354,6 +356,28 @@ mysqli_close($conn);
         #contentKeySelectGroup {
             display: none; /* Hidden by default until a main heading is selected */
         }
+
+        /* --- NEW CSS FOR SLIDE-AWAY MESSAGE (COPIED FROM login.php) --- */
+        .alert.slide-fade-out {
+            max-height: 150px; /* A reasonable starting height for the alert */
+            opacity: 1;
+            overflow: hidden; /* Ensures content doesn't spill during height animation */
+            padding: 1rem 1.25rem; /* Standard Bootstrap alert padding */
+            margin-bottom: 1rem; /* Standard Bootstrap alert margin */
+            /* Define the transition properties for smooth animation */
+            transition: max-height 0.7s ease-out, opacity 0.7s ease-out, padding 0.7s ease-out, margin 0.7s ease-out;
+        }
+
+        .alert.slide-fade-out.hidden {
+            max-height: 0; /* Collapse height */
+            opacity: 0; /* Fade out */
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border: 0; /* Remove border when collapsed */
+        }
+        /* --- END NEW CSS --- */
     </style>
 </head>
 <body>
@@ -385,7 +409,15 @@ mysqli_close($conn);
         <h1>Welcome to the Admin Dashboard, <?php echo htmlspecialchars($_SESSION["username"]); ?>!</h1>
         <p>This is where you can manage your website content, users, and settings.</p>
 
-        <?php echo $message; // Display messages here ?>
+        <?php
+        // Display login success message
+        if(isset($_GET['status']) && $_GET['status'] == 'loggedin_success'){
+            echo '<div class="alert alert-success" role="alert">
+                    You have been successfully logged in!
+                  </div>';
+        }
+        ?>
+        <?php echo $message; // Display messages from POST operations ?>
 
         <div class="row">
             <div class="col-md-4">
@@ -506,7 +538,9 @@ mysqli_close($conn);
                 <?php endif; ?>
             </div>
 
-        </div> </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const mainHeadingSelect = document.getElementById('mainHeadingSelect');
@@ -609,6 +643,27 @@ mysqli_close($conn);
                 // fetching the correct main_heading and then populating $allContentKeys
                 // and $selected_main_heading. So, the above `if (initialMainHeading)` will catch it.
             }
+
+            // --- NEW JAVASCRIPT BLOCK FOR SLIDE-AWAY LOGIN MESSAGE ---
+            const loginSuccessAlert = document.querySelector('.alert.alert-success');
+
+            // Check if this alert is the one displayed on login success (not from a POST message)
+            // It will only have a 'status' GET parameter if it's a fresh login
+            const urlParams = new URLSearchParams(window.location.search);
+            const statusParam = urlParams.get('status');
+
+            if (loginSuccessAlert && statusParam === 'loggedin_success') {
+                loginSuccessAlert.classList.add('slide-fade-out');
+
+                setTimeout(function() {
+                    loginSuccessAlert.classList.add('hidden');
+
+                    loginSuccessAlert.addEventListener('transitionend', function() {
+                        loginSuccessAlert.remove();
+                    }, { once: true });
+                }, 3000); // 3 seconds before the animation starts
+            }
+            // --- END NEW JAVASCRIPT BLOCK ---
         });
     </script>
 </body>

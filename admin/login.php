@@ -6,9 +6,8 @@ session_start(); // Start the session
 // If config.php is directly in 'admin' folder, use 'config.php'
 // If config.php is in 'main' folder, use '../config.php'
 require_once '../config.php'; // <--- IMPORTANT: This path might need adjustment based on your config.php location.
-                              // If config.php is DIRECTLY in the same 'admin' folder as login.php, change to 'config.php'
-                              // Based on your original prompt, it was 'admin/config.php', so it should be this path.
-                              // If it's in 'C:\xampp\htdocs\main\config.php', then '../config.php' is correct from 'admin/'
+                             // If config.php is DIRECTLY in the same 'admin' folder as login.php, change to 'config.php'
+                             // If it's in 'C:\xampp\htdocs\main\config.php', then '../config.php' is correct from 'admin/'
 
 // Check if the user is already logged in, if yes then redirect to admin.php
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -39,11 +38,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
         // Ensure you are selecting from the correct table, e.g., 'admin_users'
-        // This query is fine if 'admin_users' is your table for admins
         $sql = "SELECT id, username, password FROM admin_users WHERE username = ?";
 
-        // Fix: Use $conn instead of $link
-        if($stmt = mysqli_prepare($conn, $sql)){ // <--- CHANGED: $link to $conn
+        if($stmt = mysqli_prepare($conn, $sql)){
             mysqli_stmt_bind_param($stmt, "s", $param_username);
             $param_username = $username;
 
@@ -59,8 +56,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;
 
-                            header("location: admin.php"); // Correct: admin.php is in the same directory (admin/)
-                            exit; // Important to exit after header redirect
+                            // --- MODIFIED REDIRECTION FOR LOGIN SUCCESS MESSAGE ---
+                            header("location: admin.php?status=loggedin_success");
+                            exit;
                         } else{
                             $login_err = "Invalid username or password.";
                         }
@@ -74,9 +72,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
-    // Fix: Close $conn instead of $link, and only if it's open
     if (isset($conn)) {
-        mysqli_close($conn); // <--- CHANGED: $link to $conn
+        mysqli_close($conn);
     }
 }
 ?>
@@ -92,14 +89,44 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <style>
         body { font: 14px sans-serif; background-color: #f8f9fa; }
         .wrapper { width: 360px; padding: 20px; margin: 100px auto; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+
+        /* --- CSS FOR SLIDE-AWAY MESSAGE --- */
+        .alert.slide-fade-out {
+            max-height: 150px; /* A reasonable starting height for the alert */
+            opacity: 1;
+            overflow: hidden; /* Ensures content doesn't spill during height animation */
+            padding: 1rem 1.25rem; /* Standard Bootstrap alert padding */
+            margin-bottom: 1rem; /* Standard Bootstrap alert margin */
+            /* Define the transition properties for smooth animation */
+            transition: max-height 0.7s ease-out, opacity 0.7s ease-out, padding 0.7s ease-out, margin 0.7s ease-out;
+        }
+
+        .alert.slide-fade-out.hidden {
+            max-height: 0; /* Collapse height */
+            opacity: 0; /* Fade out */
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            border: 0; /* Remove border when collapsed */
+        }
+        /* --- END CSS --- */
     </style>
-</head>
+    </head>
 <body>
     <div class="wrapper">
         <h2>Admin Login</h2>
         <?php
+        // Display login error
         if(!empty($login_err)){
             echo '<div class="alert alert-danger">' . $login_err . '</div>';
+        }
+        // Display logout success message
+        if(isset($_GET['status']) && $_GET['status'] == 'loggedout_success'){
+            // MODIFIED: Removed Bootstrap's dismissible classes and close button for custom animation
+            echo '<div class="alert alert-success" role="alert">
+                    You have been successfully logged out.
+                  </div>';
         }
         ?>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -118,5 +145,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
         </form>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutAlert = document.querySelector('.alert.alert-success');
+
+        if (logoutAlert) {
+            // 1. Add the base class for our custom animation
+            logoutAlert.classList.add('slide-fade-out');
+
+            // 2. Set a timeout to trigger the slide-out and fade-out animation
+            setTimeout(function() {
+                logoutAlert.classList.add('hidden'); // This class triggers the CSS transition
+
+                // 3. Remove the alert from the DOM *after* the animation completes
+                logoutAlert.addEventListener('transitionend', function() {
+                    logoutAlert.remove(); // Removes the element entirely from the page
+                }, { once: true }); // Ensure the listener runs only once
+            }, 3000); // 3000 milliseconds = 3 seconds before the animation starts
+        }
+    });
+    </script>
 </body>
 </html>

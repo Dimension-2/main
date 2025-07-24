@@ -8,7 +8,7 @@ $_SESSION = array();
 // Destroy the session.
 session_destroy();
 
-// Redirect to login page
-header("location: login.php"); // Correct: login.php is in the same directory (admin/)
+// Redirect to login page with a success message parameter
+header("location: login.php?status=loggedout_success");
 exit;
 ?>
