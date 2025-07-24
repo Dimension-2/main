@@ -11,100 +11,275 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 // Include config.php to get the database connection ($conn)
 require_once '../config.php'; // Adjust path based on your project structure
 
-// Function to fetch all content keys for the dropdown
-function getAllContentKeys($conn) {
-    $keys = [];
-    $sql = "SELECT content_key FROM website_content ORDER BY content_key ASC";
+// --- PHP Functions for Content Management ---
+
+// Function to fetch all unique main headings
+function getAllMainHeadings($conn) {
+    $headings = [];
+    $sql = "SELECT DISTINCT main_heading FROM website_content WHERE main_heading IS NOT NULL AND main_heading != '' ORDER BY main_heading ASC";
     if ($result = mysqli_query($conn, $sql)) {
         while ($row = mysqli_fetch_assoc($result)) {
-            $keys[] = $row['content_key'];
+            $headings[] = $row['main_heading'];
         }
         mysqli_free_result($result);
+    }
+    return $headings;
+}
+
+// Function to fetch content keys, optionally filtered by main heading
+function getContentKeysByMainHeading($conn, $mainHeading = null) {
+    $keys = [];
+    $sql = "SELECT content_key FROM website_content";
+    $params = [];
+    $types = '';
+
+    if ($mainHeading) {
+        $sql .= " WHERE main_heading = ?";
+        $params[] = $mainHeading;
+        $types .= 's';
+    }
+
+    $sql .= " ORDER BY content_key ASC";
+
+    if (!empty($params)) {
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            while ($row = mysqli_fetch_assoc($result)) {
+                $keys[] = $row['content_key'];
+            }
+            mysqli_free_result($result);
+            mysqli_stmt_close($stmt);
+        }
+    } else {
+        // If no main heading is provided, fetch all as before
+        if ($result = mysqli_query($conn, $sql)) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $keys[] = $row['content_key'];
+            }
+            mysqli_free_result($result);
+        }
     }
     return $keys;
 }
 
-// Get all content keys for the dropdown
-$allContentKeys = getAllContentKeys($conn);
+
+// --- Initial Data Fetch and Variable Setup ---
+
+// Get all main headings for the first dropdown
+$allMainHeadings = getAllMainHeadings($conn);
 
 // Variables for form handling (initial values)
+$selected_main_heading = '';
 $selected_key = '';
 $current_content = '';
 $message = ''; // To display success or error messages
 
-// Handle form submission for content update
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_content'])) {
-    $selected_key = $_POST['content_key'];
-    $new_content_text = $_POST['new_content_text'];
-    $admin_username = $_SESSION["username"]; // Get the logged-in admin's username
+// Initialize content keys based on selection or empty
+$allContentKeys = [];
 
-    // Fetch the old content text before updating
-    $old_content_sql = "SELECT content_text FROM website_content WHERE content_key = ?";
-    if ($stmt_old = mysqli_prepare($conn, $old_content_sql)) {
-        mysqli_stmt_bind_param($stmt_old, "s", $selected_key);
-        mysqli_stmt_execute($stmt_old);
-        mysqli_stmt_store_result($stmt_old);
-        $old_content_text = '';
-        if (mysqli_stmt_num_rows($stmt_old) == 1) {
-            mysqli_stmt_bind_result($stmt_old, $old_content_text);
-            mysqli_stmt_fetch($stmt_old);
-        }
-        mysqli_stmt_close($stmt_old);
-    }
 
-    // Update the content in website_content table
-    $update_sql = "UPDATE website_content SET content_text = ? WHERE content_key = ?";
-    if ($stmt_update = mysqli_prepare($conn, $update_sql)) {
-        mysqli_stmt_bind_param($stmt_update, "ss", $new_content_text, $selected_key);
-        if (mysqli_stmt_execute($stmt_update)) {
-            $message = "<div class='alert alert-success'>Content for '{$selected_key}' updated successfully!</div>";
-
-            // Log the change in content_history table
-            $log_sql = "INSERT INTO content_history (content_key, old_content_text, new_content_text, changed_by) VALUES (?, ?, ?, ?)";
-            if ($stmt_log = mysqli_prepare($conn, $log_sql)) {
-                mysqli_stmt_bind_param($stmt_log, "ssss", $selected_key, $old_content_text, $new_content_text, $admin_username);
-                mysqli_stmt_execute($stmt_log);
-                mysqli_stmt_close($stmt_log);
+// --- Handle AJAX Requests ---
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    // AJAX request to load content for a selected key
+    if (isset($_GET['key'])) {
+        $selected_key = $_GET['key'];
+        $sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $selected_key);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                mysqli_stmt_bind_result($stmt, $current_content);
+                mysqli_stmt_fetch($stmt);
             } else {
-                error_log("Failed to prepare history log statement: " . mysqli_error($conn));
+                $current_content = "Content not found.";
             }
-
-            // After successful update, fetch the new current content for display
-            $current_content = $new_content_text;
-
+            mysqli_stmt_close($stmt);
         } else {
-            $message = "<div class='alert alert-danger'>Error updating content: " . mysqli_error($conn) . "</div>";
+            $current_content = "Database error fetching content.";
         }
-        mysqli_stmt_close($stmt_update);
-    } else {
-        $message = "<div class='alert alert-danger'>Error preparing update statement: " . mysqli_error($conn) . "</div>";
+        echo $current_content; // Echo content for the specific key
+        exit;
     }
-}
-
-// Handle request to load content for a selected key (e.g., via AJAX or form select change)
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['key'])) {
-    $selected_key = $_GET['key'];
-    $sql = "SELECT content_text FROM website_content WHERE content_key = ?";
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "s", $selected_key);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_store_result($stmt);
-        if (mysqli_stmt_num_rows($stmt) == 1) {
-            mysqli_stmt_bind_result($stmt, $current_content);
-            mysqli_stmt_fetch($stmt);
-        } else {
-            $current_content = "Content not found.";
-        }
-        mysqli_stmt_close($stmt);
-    } else {
-        $current_content = "Database error fetching content.";
-    }
-    // If this is an AJAX request, echo the content and exit
-    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-        echo $current_content;
+    // AJAX request to load content keys for a selected main heading
+    elseif (isset($_GET['main_heading'])) {
+        $selected_main_heading = $_GET['main_heading'];
+        $filteredKeys = getContentKeysByMainHeading($conn, $selected_main_heading);
+        echo json_encode($filteredKeys); // Echo as JSON for JavaScript to parse
         exit;
     }
 }
+
+
+// --- Handle Form Submissions (POST) ---
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Handle content update
+    if (isset($_POST['update_content'])) {
+        $selected_key = $_POST['content_key'];
+        $new_content_text = $_POST['new_content_text'];
+        $admin_username = $_SESSION["username"];
+
+        // Fetch the old content text before updating for history log
+        $old_content_sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+        $old_content_text = '';
+        if ($stmt_old = mysqli_prepare($conn, $old_content_sql)) {
+            mysqli_stmt_bind_param($stmt_old, "s", $selected_key);
+            mysqli_stmt_execute($stmt_old);
+            mysqli_stmt_store_result($stmt_old);
+            if (mysqli_stmt_num_rows($stmt_old) == 1) {
+                mysqli_stmt_bind_result($stmt_old, $old_content_text);
+                mysqli_stmt_fetch($stmt_old);
+            }
+            mysqli_stmt_close($stmt_old);
+        }
+
+        // Update the content in website_content table
+        $update_sql = "UPDATE website_content SET content_text = ? WHERE content_key = ?";
+        if ($stmt_update = mysqli_prepare($conn, $update_sql)) {
+            mysqli_stmt_bind_param($stmt_update, "ss", $new_content_text, $selected_key);
+            if (mysqli_stmt_execute($stmt_update)) {
+                $message = "<div class='alert alert-success'>Content for '{$selected_key}' updated successfully!</div>";
+
+                // Log the change in content_history table
+                $log_sql = "INSERT INTO content_history (content_key, old_content_text, new_content_text, changed_by) VALUES (?, ?, ?, ?)";
+                if ($stmt_log = mysqli_prepare($conn, $log_sql)) {
+                    mysqli_stmt_bind_param($stmt_log, "ssss", $selected_key, $old_content_text, $new_content_text, $admin_username);
+                    mysqli_stmt_execute($stmt_log);
+                    mysqli_stmt_close($stmt_log);
+                } else {
+                    error_log("Failed to prepare history log statement: " . mysqli_error($conn));
+                }
+                $current_content = $new_content_text; // Update current content display
+            } else {
+                $message = "<div class='alert alert-danger'>Error updating content: " . mysqli_error($conn) . "</div>";
+            }
+            mysqli_stmt_close($stmt_update);
+        } else {
+            $message = "<div class='alert alert-danger'>Error preparing update statement: " . mysqli_error($conn) . "</div>";
+        }
+    }
+
+    // Handle "Clear History"
+    if (isset($_POST['clear_history'])) {
+        $truncate_sql = "TRUNCATE TABLE content_history";
+        if (mysqli_query($conn, $truncate_sql)) {
+            $message = "<div class='alert alert-info'>Content history cleared successfully!</div>";
+            // No need to re-fetch history, it will be empty
+        } else {
+            $message = "<div class='alert alert-danger'>Error clearing history: " . mysqli_error($conn) . "</div>";
+        }
+    }
+
+    // Handle "Redo" (revert last change for a specific key)
+    if (isset($_POST['redo_last_change']) && isset($_POST['history_id_to_redo'])) {
+        $history_id_to_redo = $_POST['history_id_to_redo'];
+
+        // 1. Fetch the specific history entry
+        $fetch_history_sql = "SELECT content_key, old_content_text, new_content_text FROM content_history WHERE id = ?";
+        if ($stmt_fetch_history = mysqli_prepare($conn, $fetch_history_sql)) {
+            mysqli_stmt_bind_param($stmt_fetch_history, "i", $history_id_to_redo);
+            mysqli_stmt_execute($stmt_fetch_history);
+            mysqli_stmt_store_result($stmt_fetch_history);
+
+            if (mysqli_stmt_num_rows($stmt_fetch_history) == 1) {
+                mysqli_stmt_bind_result($stmt_fetch_history, $redo_key, $redo_old_text, $redo_new_text);
+                mysqli_stmt_fetch($stmt_fetch_history);
+
+                // 2. Update website_content with the old_content_text from history
+                // First, get current text to log the "redo" itself
+                $current_text_for_redo_log = '';
+                $get_current_sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+                if ($stmt_get_current = mysqli_prepare($conn, $get_current_sql)) {
+                    mysqli_stmt_bind_param($stmt_get_current, "s", $redo_key);
+                    mysqli_stmt_execute($stmt_get_current);
+                    mysqli_stmt_bind_result($stmt_get_current, $current_text_for_redo_log);
+                    if (mysqli_stmt_fetch($stmt_get_current)) {
+                        // Successfully fetched current text
+                    }
+                    mysqli_stmt_close($stmt_get_current);
+                }
+
+                $revert_sql = "UPDATE website_content SET content_text = ? WHERE content_key = ?";
+                if ($stmt_revert = mysqli_prepare($conn, $revert_sql)) {
+                    mysqli_stmt_bind_param($stmt_revert, "ss", $redo_old_text, $redo_key); // Revert to old text
+                    if (mysqli_stmt_execute($stmt_revert)) {
+                        $message = "<div class='alert alert-info'>Content for '{$redo_key}' reverted successfully!</div>";
+
+                        // Log the "redo" action as a new change
+                        $log_redo_sql = "INSERT INTO content_history (content_key, old_content_text, new_content_text, changed_by) VALUES (?, ?, ?, ?)";
+                        if ($stmt_log_redo = mysqli_prepare($conn, $log_redo_sql)) {
+                            $admin_username = $_SESSION["username"];
+                            $redo_log_changed_by = $admin_username . " (Redo)";
+                            mysqli_stmt_bind_param($stmt_log_redo, "ssss", $redo_key, $current_text_for_redo_log, $redo_old_text, $redo_log_changed_by);
+                            mysqli_stmt_execute($stmt_log_redo);
+                            mysqli_stmt_close($stmt_log_redo);
+                        } else {
+                            error_log("Failed to prepare redo log statement: " . mysqli_error($conn));
+                        }
+                    } else {
+                        $message = "<div class='alert alert-danger'>Error reverting content: " . mysqli_error($conn) . "</div>";
+                    }
+                    mysqli_stmt_close($stmt_revert);
+                } else {
+                    $message = "<div class='alert alert-danger'>Error preparing revert statement: " . mysqli_error($conn) . "</div>";
+                }
+            } else {
+                $message = "<div class='alert alert-danger'>History entry not found for redo.</div>";
+            }
+            mysqli_stmt_close($stmt_fetch_history);
+        } else {
+            $message = "<div class='alert alert-danger'>Error preparing history fetch statement for redo: " . mysqli_error($conn) . "</div>";
+        }
+    }
+
+    // After any POST operation, if a main_heading was selected, we need to preserve it
+    // And if a content_key was selected, fetch its current content
+    if (isset($_POST['main_heading_select'])) {
+        $selected_main_heading = $_POST['main_heading_select'];
+        $allContentKeys = getContentKeysByMainHeading($conn, $selected_main_heading);
+    }
+    if (isset($_POST['content_key'])) {
+        $selected_key = $_POST['content_key'];
+        // Re-fetch current_content for display after update/selection
+        $sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, "s", $selected_key);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_store_result($stmt);
+            if (mysqli_stmt_num_rows($stmt) == 1) {
+                mysqli_stmt_bind_result($stmt, $current_content);
+                mysqli_stmt_fetch($stmt);
+            }
+            mysqli_stmt_close($stmt);
+        }
+    }
+}
+
+
+// --- Initial page load handling / State restoration ---
+// If a key is selected (e.g., via GET or after a POST that didn't specify main_heading),
+// determine its main_heading to set the first dropdown.
+if (!empty($selected_key) && empty($selected_main_heading)) {
+    $sql = "SELECT main_heading FROM website_content WHERE content_key = ?";
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $selected_key);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $temp_main_heading);
+        if (mysqli_stmt_fetch($stmt)) {
+            $selected_main_heading = $temp_main_heading;
+            $allContentKeys = getContentKeysByMainHeading($conn, $selected_main_heading);
+        }
+        mysqli_stmt_close($stmt);
+    }
+}
+// If no main heading is selected but we have keys, fetch all keys initially
+if (empty($selected_main_heading) && empty($allContentKeys)) {
+    // Optionally, you could fetch keys for the first main heading, or just leave it blank
+    // For now, let's leave it blank and rely on JS to populate on first selection
+}
+
 
 // Fetch content history for display
 $content_history = [];
@@ -116,89 +291,6 @@ if ($result = mysqli_query($conn, $history_sql)) {
     mysqli_free_result($result);
 } else {
     error_log("Error fetching content history: " . mysqli_error($conn));
-}
-
-// Handle "Clear History"
-if (isset($_POST['clear_history'])) {
-    $truncate_sql = "TRUNCATE TABLE content_history";
-    if (mysqli_query($conn, $truncate_sql)) {
-        $message = "<div class='alert alert-info'>Content history cleared successfully!</div>";
-        $content_history = []; // Clear array as well
-    } else {
-        $message = "<div class='alert alert-danger'>Error clearing history: " . mysqli_error($conn) . "</div>";
-    }
-}
-
-// Handle "Redo" (revert last change for a specific key)
-if (isset($_POST['redo_last_change']) && isset($_POST['history_id_to_redo'])) {
-    $history_id_to_redo = $_POST['history_id_to_redo'];
-
-    // 1. Fetch the specific history entry
-    $fetch_history_sql = "SELECT content_key, old_content_text, new_content_text FROM content_history WHERE id = ?";
-    if ($stmt_fetch_history = mysqli_prepare($conn, $fetch_history_sql)) {
-        mysqli_stmt_bind_param($stmt_fetch_history, "i", $history_id_to_redo);
-        mysqli_stmt_execute($stmt_fetch_history);
-        mysqli_stmt_store_result($stmt_fetch_history);
-
-        if (mysqli_stmt_num_rows($stmt_fetch_history) == 1) {
-            mysqli_stmt_bind_result($stmt_fetch_history, $redo_key, $redo_old_text, $redo_new_text);
-            mysqli_stmt_fetch($stmt_fetch_history);
-
-            // 2. Update website_content with the old_content_text from history
-            // First, get current text to log the "redo" itself
-            $current_text_for_redo_log = '';
-            $get_current_sql = "SELECT content_text FROM website_content WHERE content_key = ?";
-            if ($stmt_get_current = mysqli_prepare($conn, $get_current_sql)) {
-                mysqli_stmt_bind_param($stmt_get_current, "s", $redo_key);
-                mysqli_stmt_execute($stmt_get_current);
-                mysqli_stmt_bind_result($stmt_get_current, $current_text_for_redo_log);
-                mysqli_stmt_fetch($stmt_get_current);
-                mysqli_stmt_close($stmt_get_current);
-            }
-
-            $revert_sql = "UPDATE website_content SET content_text = ? WHERE content_key = ?";
-            if ($stmt_revert = mysqli_prepare($conn, $revert_sql)) {
-                mysqli_stmt_bind_param($stmt_revert, "ss", $redo_old_text, $redo_key); // Revert to old text
-                if (mysqli_stmt_execute($stmt_revert)) {
-                    $message = "<div class='alert alert-info'>Content for '{$redo_key}' reverted successfully!</div>";
-
-                    // Log the "redo" action as a new change
-                    $log_redo_sql = "INSERT INTO content_history (content_key, old_content_text, new_content_text, changed_by) VALUES (?, ?, ?, ?)";
-                    if ($stmt_log_redo = mysqli_prepare($conn, $log_redo_sql)) {
-                        $admin_username = $_SESSION["username"];
-                        // FIX APPLIED HERE: Assign expression to a variable before binding
-                        $redo_log_changed_by = $admin_username . " (Redo)";
-                        mysqli_stmt_bind_param($stmt_log_redo, "ssss", $redo_key, $current_text_for_redo_log, $redo_old_text, $redo_log_changed_by);
-                        mysqli_stmt_execute($stmt_log_redo);
-                        mysqli_stmt_close($stmt_log_redo);
-                    } else {
-                        error_log("Failed to prepare redo log statement: " . mysqli_error($conn));
-                    }
-                } else {
-                    $message = "<div class='alert alert-danger'>Error reverting content: " . mysqli_error($conn) . "</div>";
-                }
-                mysqli_stmt_close($stmt_revert);
-            } else {
-                $message = "<div class='alert alert-danger'>Error preparing revert statement: " . mysqli_error($conn) . "</div>";
-            }
-        } else {
-            $message = "<div class='alert alert-danger'>History entry not found for redo.</div>";
-        }
-        mysqli_stmt_close($stmt_fetch_history);
-    } else {
-        $message = "<div class='alert alert-danger'>Error preparing history fetch statement for redo: " . mysqli_error($conn) . "</div>";
-    }
-    // Re-fetch history to update display after redo
-    $content_history = [];
-    $history_sql = "SELECT id, content_key, old_content_text, new_content_text, changed_by, changed_at FROM content_history ORDER BY changed_at DESC LIMIT 20";
-    if ($result = mysqli_query($conn, $history_sql)) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $content_history[] = $row;
-        }
-        mysqli_free_result($result);
-    } else {
-        error_log("Error re-fetching content history after redo: " . mysqli_error($conn));
-    }
 }
 
 // Close connection at the end of the script
@@ -257,6 +349,10 @@ mysqli_close($conn);
         .btn-redo {
             padding: 5px 10px;
             font-size: 0.85em;
+        }
+        /* Style for the second dropdown, initially hidden */
+        #contentKeySelectGroup {
+            display: none; /* Hidden by default until a main heading is selected */
         }
     </style>
 </head>
@@ -325,16 +421,34 @@ mysqli_close($conn);
             <h2>Manage Website Content</h2>
             <form method="post" action="admin.php">
                 <div class="form-group">
-                    <label for="contentKeySelect">Select Content Key:</label>
-                    <select class="form-select" id="contentKeySelect" name="content_key" required>
-                        <option value="">-- Select a Key --</option>
-                        <?php foreach ($allContentKeys as $key): ?>
-                            <option value="<?php echo htmlspecialchars($key); ?>" <?php echo ($selected_key == $key) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($key); ?>
+                    <label for="mainHeadingSelect">Select Main Section:</label>
+                    <select class="form-select" id="mainHeadingSelect" name="main_heading_select" required>
+                        <option value="">-- Select a Section --</option>
+                        <?php foreach ($allMainHeadings as $heading): ?>
+                            <option value="<?php echo htmlspecialchars($heading); ?>" <?php echo ($selected_main_heading == $heading) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($heading); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+
+                <div class="form-group" id="contentKeySelectGroup" style="<?php echo !empty($selected_main_heading) ? 'display: block;' : 'display: none;'; ?>">
+                    <label for="contentKeySelect">Select Content Key:</label>
+                    <select class="form-select" id="contentKeySelect" name="content_key" required>
+                        <option value="">-- Select a Key --</option>
+                        <?php
+                        // Populate this dropdown if a main heading was already selected (e.g., on page reload after update)
+                        if (!empty($selected_main_heading)) {
+                            foreach ($allContentKeys as $key): ?>
+                                <option value="<?php echo htmlspecialchars($key); ?>" <?php echo ($selected_key == $key) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($key); ?>
+                                </option>
+                            <?php endforeach;
+                        }
+                        ?>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label for="currentContent">Current Content:</label>
                     <div id="currentContentDisplay" class="form-control" style="white-space: pre-wrap; word-wrap: break-word;">
@@ -394,38 +508,106 @@ mysqli_close($conn);
 
         </div> </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('contentKeySelect').addEventListener('change', function() {
-            var selectedKey = this.value;
-            var currentContentDisplay = document.getElementById('currentContentDisplay');
-            var newContentTextarea = document.getElementById('newContentText');
-
-            if (selectedKey) {
-                // Use AJAX to fetch the current content for the selected key
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'admin.php?key=' + encodeURIComponent(selectedKey), true);
-                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Indicate it's an AJAX request
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        currentContentDisplay.textContent = xhr.responseText;
-                        newContentTextarea.value = xhr.responseText; // Pre-fill textarea with current content
-                    } else {
-                        currentContentDisplay.textContent = 'Error loading content.';
-                        newContentTextarea.value = '';
-                    }
-                };
-                xhr.send();
-            } else {
-                currentContentDisplay.textContent = '';
-                newContentTextarea.value = '';
-            }
-        });
-
-        // Trigger change event on page load if a key is already selected (e.g., after form submission)
         document.addEventListener('DOMContentLoaded', function() {
-            var selectedOption = document.querySelector('#contentKeySelect option:checked');
-            if (selectedOption && selectedOption.value) {
-                // Manually trigger the change event to load content if a key is pre-selected
-                document.getElementById('contentKeySelect').dispatchEvent(new Event('change'));
+            const mainHeadingSelect = document.getElementById('mainHeadingSelect');
+            const contentKeySelectGroup = document.getElementById('contentKeySelectGroup');
+            const contentKeySelect = document.getElementById('contentKeySelect');
+            const currentContentDisplay = document.getElementById('currentContentDisplay');
+            const newContentTextarea = document.getElementById('newContentText');
+
+            // Function to load content for a selected key
+            function loadContentForKey(selectedKey) {
+                if (selectedKey) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'admin.php?key=' + encodeURIComponent(selectedKey), true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Indicate it's an AJAX request
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            currentContentDisplay.textContent = xhr.responseText;
+                            newContentTextarea.value = xhr.responseText;
+                        } else {
+                            currentContentDisplay.textContent = 'Error loading content.';
+                            newContentTextarea.value = '';
+                        }
+                    };
+                    xhr.send();
+                } else {
+                    currentContentDisplay.textContent = '';
+                    newContentTextarea.value = '';
+                }
+            }
+
+            // Function to populate contentKeySelect based on selected main heading
+            function populateContentKeys(selectedMainHeading) {
+                if (selectedMainHeading) {
+                    contentKeySelectGroup.style.display = 'block'; // Show the second dropdown
+                    contentKeySelect.innerHTML = '<option value="">-- Loading Keys --</option>'; // Clear and show loading state
+                    currentContentDisplay.textContent = ''; // Clear content display
+                    newContentTextarea.value = ''; // Clear textarea
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'admin.php?main_heading=' + encodeURIComponent(selectedMainHeading), true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            try {
+                                const keys = JSON.parse(xhr.responseText);
+                                contentKeySelect.innerHTML = '<option value="">-- Select a Key --</option>'; // Reset
+                                keys.forEach(function(key) {
+                                    const option = document.createElement('option');
+                                    option.value = key;
+                                    option.textContent = key;
+                                    contentKeySelect.appendChild(option);
+                                });
+
+                                // After populating, if a key was previously selected (e.g., on form submission),
+                                // try to re-select it and load its content.
+                                const previouslySelectedKey = "<?php echo htmlspecialchars($selected_key); ?>";
+                                if (previouslySelectedKey && keys.includes(previouslySelectedKey)) {
+                                    contentKeySelect.value = previouslySelectedKey;
+                                    loadContentForKey(previouslySelectedKey);
+                                }
+                            } catch (e) {
+                                console.error('Error parsing JSON:', e, xhr.responseText);
+                                contentKeySelect.innerHTML = '<option value="">-- Error loading keys --</option>';
+                            }
+                        } else {
+                            contentKeySelect.innerHTML = '<option value="">-- Error loading keys --</option>';
+                        }
+                    };
+                    xhr.send();
+                } else {
+                    contentKeySelectGroup.style.display = 'none'; // Hide the second dropdown
+                    contentKeySelect.innerHTML = '<option value="">-- Select a Key --</option>'; // Reset options
+                    currentContentDisplay.textContent = '';
+                    newContentTextarea.value = '';
+                }
+            }
+
+            // Event listener for the Main Heading dropdown
+            mainHeadingSelect.addEventListener('change', function() {
+                populateContentKeys(this.value);
+            });
+
+            // Event listener for the Content Key dropdown
+            contentKeySelect.addEventListener('change', function() {
+                loadContentForKey(this.value);
+            });
+
+            // Initial load logic: If a main heading was already selected (e.g., via POST on page reload),
+            // populate the second dropdown and load content for the selected key.
+            const initialMainHeading = "<?php echo htmlspecialchars($selected_main_heading); ?>";
+            if (initialMainHeading) {
+                populateContentKeys(initialMainHeading);
+            }
+            // If main heading is not selected, but a key is (shouldn't happen often with the new flow,
+            // but good for robustness or direct URL access with ?key= param)
+            else if ("<?php echo htmlspecialchars($selected_key); ?>") {
+                // This case is largely handled by the PHP, which tries to get the main_heading
+                // for the selected key and then populates. But for a clean JS start:
+                // If main_heading is empty but selected_key is present, the PHP block handles
+                // fetching the correct main_heading and then populating $allContentKeys
+                // and $selected_main_heading. So, the above `if (initialMainHeading)` will catch it.
             }
         });
     </script>

@@ -1,7 +1,14 @@
 <?php
 // my-project/admin/login.php
 session_start(); // Start the session
-require_once 'config.php'; // Correct: config.php is in the same directory (admin/)
+
+// The config.php should be one level up, as it was in previous instructions
+// If config.php is directly in 'admin' folder, use 'config.php'
+// If config.php is in 'main' folder, use '../config.php'
+require_once '../config.php'; // <--- IMPORTANT: This path might need adjustment based on your config.php location.
+                              // If config.php is DIRECTLY in the same 'admin' folder as login.php, change to 'config.php'
+                              // Based on your original prompt, it was 'admin/config.php', so it should be this path.
+                              // If it's in 'C:\xampp\htdocs\main\config.php', then '../config.php' is correct from 'admin/'
 
 // Check if the user is already logged in, if yes then redirect to admin.php
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
@@ -31,9 +38,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
+        // Ensure you are selecting from the correct table, e.g., 'admin_users'
+        // This query is fine if 'admin_users' is your table for admins
         $sql = "SELECT id, username, password FROM admin_users WHERE username = ?";
 
-        if($stmt = mysqli_prepare($link, $sql)){
+        // Fix: Use $conn instead of $link
+        if($stmt = mysqli_prepare($conn, $sql)){ // <--- CHANGED: $link to $conn
             mysqli_stmt_bind_param($stmt, "s", $param_username);
             $param_username = $username;
 
@@ -50,6 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["username"] = $username;
 
                             header("location: admin.php"); // Correct: admin.php is in the same directory (admin/)
+                            exit; // Important to exit after header redirect
                         } else{
                             $login_err = "Invalid username or password.";
                         }
@@ -63,7 +74,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
-    mysqli_close($link);
+    // Fix: Close $conn instead of $link, and only if it's open
+    if (isset($conn)) {
+        mysqli_close($conn); // <--- CHANGED: $link to $conn
+    }
 }
 ?>
 
