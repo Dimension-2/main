@@ -1,0 +1,33 @@
+Website Overview:
+
+Navigation: Top bar with business categories, dropdowns, and "Talk to Expert."
+
+Hero Section: Main headline, intro text, and a circular image.
+
+Main Content Box: All core content sits within a modern, white, rounded box.
+
+Client Logos: Scrolling display of client brands.
+
+Innovation: Highlights technology integration with a video play button.
+
+Expertise: Shows how talent and tech combine, includes an image.
+
+Scalability: Explains growth support with bullet points and unique image layout.
+
+"Our Approach" Section (Video Background):
+
+Intro Video: "Get to Know Newfront" with a play button.
+
+AI Focus: Details AI's role in client experience.
+
+Key Stats: "By the Numbers" displays company metrics.
+
+Industries Carousel: Scrollable section of industry images with left/right buttons and a scrollbar.
+
+Latest News: "Latest from Newfront" displays recent articles with rounded images.
+
+Footer: Dark, modern footer with company info, social links, and legal details.
+
+Scroll-to-Top: Button appears on scroll to quickly return to page top.
+
+Technologies: HTML, CSS, Bootstrap, JavaScript.

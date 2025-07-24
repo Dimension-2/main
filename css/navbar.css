@@ -1,0 +1,57 @@
+/* --- Custom styles for the navbar --- */
+.custom-navbar {
+    background-color: var(--navbar-bg) !important; /* Light grey background */
+    border-radius: 12px; /* Rounded corners */
+    margin-bottom: 20px !important; /* Space below navbar */
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+    width: calc(100% - 24px); /* Full width minus margins */
+    max-width: 1200px; /* Navbar Max Width set to 1200px for a "full" but contained look */
+    z-index: 1000;
+}
+
+.custom-navbar .navbar-brand img {
+    /* Specific styling for your logo */
+}
+
+.custom-navbar .nav-link {
+    color: var(--navbar-link-dark) !important; /* Darker text for links */
+    font-weight: 500;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.custom-navbar .nav-link:hover {
+    color: var(--navbar-link-hover) !important; /* Blue on hover */
+}
+
+.custom-navbar .nav-link.btn-primary {
+    background-color: var(--navbar-link-hover) !important; /* Bootstrap primary blue for the button */
+    border-color: var(--navbar-link-hover) !important;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-navbar .nav-link.btn-primary:hover {
+    background-color: #0056b3 !important; /* Darker blue on button hover */
+    border-color: #0056b3 !important;
+}
+
+.custom-navbar .dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 5px;
+    background-color: var(--white); /* Ensure dropdown menu is white */
+}
+
+.custom-navbar .dropdown-item {
+    color: var(--navbar-link-dark);
+}
+
+.custom-navbar .dropdown-item:hover {
+    background-color: #e9ecef;
+    color: var(--navbar-link-dark);
+}

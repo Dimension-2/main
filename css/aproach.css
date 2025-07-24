@@ -1,0 +1,163 @@
+/* Root variables for consistent colors */
+:root {
+    --primary-pink-custom: #FF4081; /* A vibrant pink for main accents */
+    --light-grey-bg: #f8f9fa; /* Light background for sections */
+    --dark-text: #2c3e50; /* Dark text for headings */
+    --medium-text: #7f8c8d; /* Muted grey for descriptions */
+    --card-bg: #ffffff; /* White background for cards */
+    --shadow-light: rgba(0, 0, 0, 0.08); /* Light shadow for cards */
+    --shadow-medium: rgba(0, 0, 0, 0.15); /* Medium shadow for hover/active */
+}
+
+/* General Body Styling (adjust as per your overall site) */
+body {
+    font-family: 'Inter', sans-serif; /* Or your preferred font */
+    color: var(--dark-text);
+    background-color: var(--light-grey-bg);
+}
+
+/* Our Approach Section Styling */
+.our-approach-new-section {
+    background-color: var(--light-grey-bg); /* Or a specific background if different */
+    padding: 60px 0; /* Adjust padding as needed */
+}
+
+.our-approach-new-section .section-title {
+    font-family: 'Poppins', sans-serif; /* Or your heading font */
+    font-weight: 700;
+    font-size: 2.8rem; /* Large and impactful title */
+    color: var(--dark-text);
+    margin-bottom: 20px;
+}
+
+.our-approach-new-section p {
+    font-size: 1.1rem;
+    color: var(--medium-text);
+    line-height: 1.7;
+    max-width: 700px; /* Limit width for readability */
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left; /* Keep text left aligned as per your HTML */
+}
+
+/* Card Styling */
+.approach-card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: 0 5px 15px var(--shadow-light) !important; /* Lighter shadow */
+    border: none !important; /* Ensure no default Bootstrap border */
+    background-color: var(--card-bg);
+    height: 100%; /* Ensure cards in a row have equal height */
+    padding: 25px !important; /* Adjust internal padding */
+}
+
+.approach-card:hover {
+    transform: translateY(-8px); /* Lift card on hover */
+    box-shadow: 0 12px 25px var(--shadow-medium) !important; /* Deeper shadow on hover */
+}
+
+.approach-card .card-title {
+    font-family: 'Poppins', sans-serif; /* Or your heading font */
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--dark-text);
+    margin-bottom: 15px;
+}
+
+.approach-card .card-text {
+    color: var(--medium-text);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Icon Circle Styling */
+.bg-pink-custom {
+    background-color: var(--primary-pink-custom) !important; /* Use custom pink variable */
+}
+
+.approach-icon-circle {
+    width: 60px; /* Slightly larger circle */
+    height: 60px; /* Slightly larger circle */
+    min-width: 60px; /* Ensure it doesn't shrink */
+    min-height: 60px; /* Ensure it doesn't shrink */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3); /* Shadow for the circle */
+}
+
+.approach-icon {
+    width: 32px; /* Slightly larger SVG icon */
+    height: 32px; /* Slightly larger SVG icon */
+}
+
+/* Specific SVG fill override for the last icon (if needed) */
+/* If the last icon (the target) should specifically be pink inside,
+   you might need more specific CSS or inline styling for its fill attribute
+   if the general 'fill="white"' conflicts with the desired inner color.
+   However, your current SVG has fill="white" for the outer circle and
+   fill="#FF4D7A" for the inner, which should work. */
+
+/* Responsive Adjustments for this section */
+@media (max-width: 992px) {
+    .our-approach-new-section .section-title {
+        font-size: 2.4rem;
+    }
+    .our-approach-new-section p {
+        font-size: 1rem;
+    }
+    .approach-card .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .our-approach-new-section .section-title {
+        font-size: 2rem;
+        text-align: center !important; /* Center on smaller screens */
+    }
+    .our-approach-new-section p {
+        text-align: center !important; /* Center on smaller screens */
+        max-width: 90%; /* Adjust max-width for better fit */
+    }
+    .approach-icon-circle {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        min-height: 55px;
+    }
+    .approach-icon {
+        width: 28px;
+        height: 28px;
+    }
+    .approach-card .card-title {
+        font-size: 1.2rem;
+    }
+    .approach-card .card-text {
+        font-size: 0.9rem;
+    }
+    /* Adjust column gap for smaller screens */
+    .row.g-4 {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .our-approach-new-section .section-title {
+        font-size: 1.8rem;
+    }
+    .approach-icon-circle {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+    .approach-icon {
+        width: 25px;
+        height: 25px;
+    }
+    .approach-card {
+        padding: 20px !important;
+    }
+}

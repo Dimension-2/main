@@ -1,0 +1,751 @@
+/* --- RESPONSIVE ADJUSTMENTS --- */
+
+/* Keyframes for animations */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+@keyframes moveBeam {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(calc(100vw + 50px)); }
+}
+
+@keyframes pulseBorder {
+    0% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+}
+
+
+/* Media query for smaller desktops, tablets (max-width: 991.98px) */
+@media (max-width: 992px) { /* Changed to 992px to match contact_us.html's media query */
+    /* Navbar adjustments */
+    .custom-navbar {
+        width: 100%; /* Full width on smaller screens */
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 0;
+        padding: 0.8rem 1rem;
+    }
+    .custom-navbar .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+        font-size: 1.25rem;
+        line-height: 1;
+        background-color: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.25rem;
+    }
+    .custom-navbar .navbar-collapse {
+        margin-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 10px;
+    }
+    .custom-navbar .nav-link {
+        padding: 0.5rem 0;
+        text-align: center;
+    }
+    .custom-navbar .nav-link.btn-primary {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* Hero section adjustments */
+    .hero-section {
+        min-height: auto; /* Allow height to adjust */
+        padding-top: 80px;
+        padding-bottom: 120px; /* Adjust for wave */
+    }
+    .hero-content {
+        flex-direction: column-reverse; /* Stack image on top of text */
+        text-align: center;
+    }
+    .hero-text {
+        max-width: 100%;
+        padding-right: 0;
+        margin-top: 40px;
+        text-align: center;
+    }
+    .hero-text h1,
+    .hero-text h2.display-5 {
+        font-size: 2.8rem;
+    }
+    .hero-text .hero-subtext {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        max-width: 100%; /* No max-width on smaller screens */
+    }
+    .hero-image-container {
+        width: 300px; /* Smaller image */
+        height: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30px; /* Space between image and text */
+    }
+    .hero-image-container::before {
+        transform: translate(-50%, -50%) scale(1.05); /* Adjust pulse for smaller size */
+    }
+
+    /* Charting section adjustments */
+    .charting-title {
+        font-size: 2.5rem;
+    }
+    .charting-description {
+        font-size: 0.95rem;
+    }
+    .charting-bullets {
+        margin-top: 40px; /* Space between video and bullets */
+    }
+    .charting-bullets li {
+        font-size: 0.9rem;
+    }
+    .video-palette-container {
+        height: 300px; /* Smaller video height */
+    }
+    .play-button-overlay {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+
+    /* Talent Tech section adjustments */
+    .talent-tech-title {
+        font-size: 2.5rem;
+    }
+    .talent-tech-description {
+        font-size: 0.95rem;
+    }
+    .talent-tech-bullets li {
+        font-size: 0.9rem;
+    }
+    .talent-tech-image {
+        margin-bottom: 40px;
+    }
+    .btn-pink-outline {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Built to Scale section adjustments */
+    .built-to-scale-section {
+        border-radius: 0; /* Remove border-radius on smaller screens if preferred */
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .built-to-scale-title {
+        font-size: 2.5rem;
+    }
+    .built-to-scale-description {
+        font-size: 0.95rem;
+    }
+    .built-to-scale-bullets {
+        margin-top: 40px; /* Space between images and bullets on small screens */
+    }
+    .built-to-scale-bullets li {
+        font-size: 0.9rem;
+    }
+    .built-to-scale-image.img-small,
+    .built-to-scale-image.img-large {
+        width: 150px; /* Make images smaller on mobile */
+        height: 180px;
+        margin-right: 10px; /* Adjust spacing */
+        margin-left: 10px;
+    }
+    .built-to-scale-image-row {
+        flex-wrap: wrap; /* Allow images to wrap if necessary */
+        justify-content: center;
+    }
+
+    /* Our Approach section adjustments (Existing) */
+    .approach-title-white {
+        font-size: 2.8rem;
+    }
+    .numbers-title-white {
+        font-size: 2.2rem;
+        text-align: center !important;
+    }
+    .numbers-description-white {
+        text-align: center !important;
+    }
+    .number-card {
+        padding: 20px;
+    }
+    .number-value {
+        font-size: 2rem;
+    }
+    .latest-from-newfront-title {
+        font-size: 2.8rem;
+        text-align: center;
+    }
+
+    /* NEW Our Approach Section adjustments */
+    .our-approach-new-section .section-title {
+        font-size: 2.4rem;
+    }
+    .our-approach-new-section p {
+        font-size: 1rem;
+    }
+    .approach-card .card-title {
+        font-size: 1.3rem;
+    }
+
+    /* Contact Us Page Adjustments (Added from contact_us.html) */
+    .contact-container {
+        padding: 50px 60px;
+    }
+    .contact-header h1 {
+        font-size: 3rem;
+    }
+    .contact-info h2 {
+        font-size: 2rem;
+    }
+    .contact-item h3 {
+        font-size: 1.4rem;
+    }
+    .close-button {
+        font-size: 2.5rem;
+        top: 20px;
+        right: 20px;
+    }
+
+    /* Footer adjustments */
+    .floating-footer-inner {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .footer-top-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-logo svg {
+        margin-bottom: 15px;
+    }
+    .footer-tagline {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    .social-icon {
+        margin: 0 10px 15px 10px;
+    }
+    .footer-links {
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+    .footer-copyright,
+    .footer-legal-links,
+    .footer-disclaimer {
+        font-size: 0.75rem;
+    }
+    .footer-legal-links .list-inline-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+}
+
+
+/* Media query for tablets, large phones (max-width: 767.98px) */
+@media (max-width: 768px) { /* Changed to 768px to match contact_us.html's media query */
+    /* Clients Trust section adjustments */
+    .clients-header-row {
+        min-height: 120px;
+    }
+    .clients-header-row::before {
+        width: 400px;
+        height: 200px;
+    }
+    .section-title-clients {
+        font-size: 2rem;
+    }
+    .section-description-clients {
+        font-size: 0.9rem;
+    }
+    .client-logo-item {
+        width: 120px;
+        height: 60px;
+        margin: 0 10px;
+    }
+    .client-logo-item img {
+        padding: 5px;
+    }
+
+    /* Our Approach section adjustments (Existing) */
+    .our-approach-section {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    .approach-title-white {
+        font-size: 2.2rem;
+    }
+    .approach-description-white {
+        font-size: 0.9rem;
+    }
+    .large-play-button {
+        width: 70px;
+        height: 70px;
+        font-size: 2.5rem;
+    }
+    .numbers-title-white {
+        font-size: 1.8rem;
+    }
+    .numbers-description-white {
+        font-size: 0.85rem;
+    }
+    .number-value {
+        font-size: 1.8rem;
+    }
+    .number-label {
+        font-size: 0.8rem;
+    }
+    .number-card {
+        margin-bottom: 20px; /* Add space between cards on small screens */
+    }
+    .industry-card {
+        width: 150px; /* Smaller cards on mobile */
+        height: 200px;
+        margin-right: 15px;
+    }
+    .industry-card img {
+        height: 100px;
+    }
+    .industry-title {
+        font-size: 0.9rem;
+    }
+    .carousel-nav {
+        position: static; /* Position below carousel on small screens */
+        justify-content: center;
+        margin-top: 20px;
+        transform: none;
+    }
+    .latest-from-newfront-title {
+        font-size: 2.2rem;
+    }
+    .latest-card-img {
+        height: 150px;
+    }
+    .latest-card-title {
+        font-size: 1.1rem;
+    }
+    .latest-card-description {
+        font-size: 0.85rem;
+    }
+
+    /* NEW Our Approach Section adjustments */
+    .our-approach-new-section .section-title {
+        font-size: 2rem;
+        text-align: center !important; /* Center on smaller screens */
+    }
+    .our-approach-new-section p {
+        text-align: center !important; /* Center on smaller screens */
+        max-width: 90%; /* Adjust max-width for better fit */
+    }
+    .approach-icon-circle {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        min-height: 55px;
+    }
+    .approach-icon {
+        width: 28px;
+        height: 28px;
+    }
+    .approach-card .card-title {
+        font-size: 1.2rem;
+    }
+    .approach-card .card-text {
+        font-size: 0.9rem;
+    }
+    /* Adjust column gap for smaller screens */
+    .row.g-4 { /* Assuming this Bootstrap class is used for your card grid */
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+    }
+
+    /* Contact Us Page Adjustments (Added from contact_us.html) */
+    body {
+        padding: 50px 15px;
+    }
+    .contact-container {
+        padding: 40px 30px;
+        border-radius: 15px;
+    }
+    .contact-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    .contact-header h1::after {
+        width: 60px;
+        height: 4px;
+    }
+    .contact-header p {
+        font-size: 1rem;
+    }
+    .contact-info h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    .contact-item h3 {
+        font-size: 1.2rem;
+    }
+    .contact-item p {
+        font-size: 0.95rem;
+    }
+    .contact-button {
+        padding: 12px 25px;
+        font-size: 1.05rem;
+        border-radius: 8px;
+    }
+    .close-button {
+        font-size: 2rem;
+        top: 15px;
+        right: 15px;
+    }
+
+
+
+/* Media query for small phones (max-width: 575.98px) */
+@media (max-width: 576px) { /* Changed to 576px to match contact_us.html's media query */
+    /* Hero section adjustments */
+    .hero-text h1,
+    .hero-text h2.display-5 {
+        font-size: 2.2rem;
+    }
+    .hero-text .hero-subtext {
+        font-size: 0.9rem;
+    }
+    .hero-text .btn-pink {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    .hero-image-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    /* Built to Scale section adjustments */
+    .built-to-scale-image.img-small,
+    .built-to-scale-image.img-large {
+        width: 120px;
+        height: 150px;
+        margin: 5px; /* Even smaller margin */
+    }
+
+    /* NEW Our Approach Section adjustments */
+    .our-approach-new-section .section-title {
+        font-size: 1.8rem;
+    }
+    .approach-icon-circle {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+    .approach-icon {
+        width: 25px;
+        height: 25px;
+    }
+    .approach-card {
+        padding: 20px !important;
+    }
+
+    /* Contact Us Page Adjustments (Added from contact_us.html) */
+    .contact-container {
+        padding: 30px 20px;
+    }
+    .contact-header h1 {
+        font-size: 2rem;
+    }
+    .contact-info h2 {
+        font-size: 1.6rem;
+    }
+    .contact-item h3 {
+        font-size: 1.1rem;
+    }
+}
+}
+/* Existing responsive.css content (keep it) */
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .preorder-container {
+        padding: 40px 45px;
+    }
+    .preorder-header h2 {
+        font-size: 2.8rem;
+    }
+    .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px 30px;
+    }
+    fieldset {
+        padding: 20px;
+    }
+    legend {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 30px 15px;
+    }
+    .preorder-container {
+        padding: 30px 25px;
+        border-radius: 20px;
+    }
+    .preorder-header h2 {
+        font-size: 2.2rem;
+    }
+    .preorder-header p {
+        font-size: 1rem;
+    }
+    .close-button {
+        font-size: 2.2rem;
+        top: 18px;
+        right: 18px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+        gap: 20px;
+    }
+    fieldset {
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+    legend {
+        font-size: 1rem;
+    }
+    .radio-options-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .submit-button {
+        width: 100%;
+        padding: 14px 25px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .preorder-container {
+        padding: 25px 15px;
+    }
+    .preorder-header h2 {
+        font-size: 1.8rem;
+    }
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    .form-group .form-control,
+    .form-group .form-select {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+    .submit-button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+    .form-footer {
+        font-size: 0.7rem;
+    }
+}
+/* Existing responsive.css content (keep it) */
+
+/* --- Responsive Adjustments from pre_order.html (keep these) --- */
+@media (max-width: 992px) {
+    .preorder-container {
+        padding: 40px 45px;
+    }
+    .preorder-header h2 {
+        font-size: 2.8rem;
+    }
+    .form-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px 30px;
+    }
+    fieldset {
+        padding: 20px;
+    }
+    legend {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* body {
+        padding: 30px 15px; /* This conflicts with new body padding, resolve in base.css or specify per page */
+    } */
+    .preorder-container {
+        padding: 30px 25px;
+        border-radius: 20px;
+    }
+    .preorder-header h2 {
+        font-size: 2.2rem;
+    }
+    .preorder-header p {
+        font-size: 1rem;
+    }
+    .close-button {
+        font-size: 2.2rem;
+        top: 18px;
+        right: 18px;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    fieldset {
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+    legend {
+        font-size: 1rem;
+    }
+    .radio-options-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .submit-button {
+        width: 100%;
+        padding: 14px 25px;
+        font-size: 1.1rem;
+    }
+
+@media (max-width: 576px) {
+    .preorder-container {
+        padding: 25px 15px;
+    }
+    .preorder-header h2 {
+        font-size: 1.8rem;
+    }
+    .form-group label {
+        font-size: 0.85rem;
+    }
+    .form-group .form-control,
+    .form-group .form-select {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+    .submit-button {
+        padding: 12px 20px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+    .form-footer {
+        font-size: 0.7rem;
+    }
+}
+
+
+/* --- Responsive Adjustments from future_innovations.html (New) --- */
+@media (max-width: 1200px) {
+    .solution-section {
+        padding: 60px 60px;
+    }
+}
+
+@media (max-width: 992px) {
+    .solution-section {
+        padding: 50px 40px;
+        border-radius: 20px;
+    }
+    .solution-title {
+        font-size: 3.5rem;
+    }
+    .solution-intro {
+        font-size: 1.15rem;
+    }
+    h2 {
+        font-size: 2.2rem;
+    }
+    .features-list {
+        grid-template-columns: 1fr; /* Stack columns on smaller tablets/laptops */
+    }
+    .features-list li {
+        padding: 20px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* body {
+        padding: 40px 15px; /* This conflicts with pre_order body padding, keep the latest in base.css */
+    } */
+    .solution-section {
+        padding: 40px 30px;
+    }
+    .solution-title {
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+    }
+    .solution-title::after {
+        width: 90px;
+        height: 5px;
+    }
+    .solution-intro {
+        font-size: 1rem;
+        margin-bottom: 40px;
+    }
+    h2 {
+        font-size: 1.8rem;
+        margin-top: 50px;
+        margin-bottom: 25px;
+    }
+    .features-list li {
+        font-size: 1rem;
+        padding: 18px 20px;
+    }
+    .features-list li .icon {
+        font-size: 1.8rem;
+        margin-right: 20px;
+    }
+    .call-to-action {
+        font-size: 1.2rem;
+        padding: 25px 30px;
+        margin-top: 50px;
+    }
+    .call-to-action .icon {
+        font-size: 2rem;
+    }
+
+@media (max-width: 576px) {
+    .solution-section {
+        padding: 30px 20px;
+    }
+    .solution-title {
+        font-size: 2.2rem;
+    }
+    .solution-title::after {
+        width: 70px;
+        height: 4px;
+    }
+    .solution-intro {
+        font-size: 0.95rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    .features-list li {
+        font-size: 0.9rem;
+    }
+    .features-list li .icon {
+        font-size: 1.6rem;
+        margin-right: 15px;
+    }
+    .call-to-action {
+        font-size: 1.05rem;
+        padding: 20px 25px;
+    }
+    .call-to-action .icon {
+        font-size: 1.8rem;
+    }
+}

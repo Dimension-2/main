@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newfront - Insurance and Technology</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* All the CSS styles you provided in part 4 and any previous parts would go here */
+        /* General Styles */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Section Spacing */
+        .py-5 {
+            padding-top: 3rem !important;
+            padding-bottom: 3rem !important;
+        }
+
+        /* Titles and Descriptions */
+        .section-title {
+            font-family: Georgia, serif;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section-description,
+        .talent-tech-description,
+        .built-to-scale-description {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Card Styles (By the Numbers sections) */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 2rem;
+            text-align: center;
+            height: 100%;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #FF4D7A;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-label {
+            font-size: 1rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Icons */
+        svg {
+            fill: #FF4D7A;
+        }
+
+        /* Animated Divider */
+        .animated-divider {
+            height: 2px;
+            background: linear-gradient(to right, #FF4D7A, #FF7F50, #FFD700);
+            animation: divider-animation 3s infinite alternate;
+            margin: 3rem 0;
+        }
+
+        .white-divider {
+            background: linear-gradient(to right, #ffffff, #f0f0f0, #e0e0e0);
+            animation: divider-animation 3s infinite alternate;
+        }
+
+        @keyframes divider-animation {
+            from {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+
+        /* Talent Meets Tech Section */
+        .talent-tech-image {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
+
+        .section-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #FF4D7A;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .talent-tech-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .talent-tech-bullets li {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .talent-tech-bullets li i {
+            margin-right: 0.8rem;
+            color: #FF4D7A;
+            margin-top: 0.3em;
+            font-size: 0.7em;
+        }
+
+        .btn-pink-outline {
+            color: #FF4D7A;
+            border-color: #FF4D7A;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-pink-outline:hover {
+            background-color: #FF4D7A;
+            color: #fff;
+        }
+
+        /* Built to Scale Section */
+        .built-to-scale-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .built-to-scale-bullets li {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .built-to-scale-bullets li i {
+            margin-right: 0.8rem;
+            color: #FF4D7A;
+            margin-top: 0.3em;
+            font-size: 0.7em;
+        }
+
+        .built-to-scale-image {
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .img-small {
+            max-width: 60%;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .img-large {
+            max-width: 48%;
+            display: inline-block;
+        }
+
+        .built-to-scale-image-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+
+        /* Our Approach Section (Video Background) */
+        .our-approach-section {
+            position: relative;
+            width: 100%;
+            height: auto;
+            min-height: 800px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        .our-approach-content {
+            position: relative;
+            z-index: 1;
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        .approach-title-white {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .approach-description-white {
+            font-size: 1.2rem;
+            color: #f0f0f0;
+        }
+
+        .btn-light-outline {
+            color: #fff;
+            border-color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-light-outline:hover {
+            background-color: #fff;
+            color: #FF4D7A;
+        }
+
+        /* White Number Cards within Video Section */
+        .number-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .number-icon {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .number-value {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .number-label {
+            font-size: 1.1rem;
+            color: #f0f0f0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .numbers-title-white {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: start;
+        }
+
+        .numbers-description-white {
+            font-size: 1.1rem;
+            color: #f0f0f0;
+            text-align: start;
+        }
+
+        /* Industry Carousel */
+        .industry-carousel-wrapper {
+            position: relative;
+            overflow: hidden;
+            margin-top: 3rem;
+            padding-bottom: 2rem;
+            /* Space for scrollbar */
+        }
+
+        .industry-carousel {
+            display: flex;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            /* for smooth scrolling on iOS */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+        }
+
+        .industry-carousel::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        .industry-card {
+            flex: 0 0 auto;
+            width: 250px;
+            /* Adjust card width as needed */
+            margin-right: 20px;
+            scroll-snap-align: start;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .industry-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .industry-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .industry-title {
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+            pointer-events: none;
+            /* Allow clicks to pass through */
+        }
+
+        .carousel-btn {
+            background-color: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            pointer-events: auto;
+            /* Re-enable clicks for buttons */
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .prev-btn {
+            margin-left: -25px;
+            /* Half button width outside for visual alignment */
+        }
+
+        .next-btn {
+            margin-right: -25px;
+            /* Half button width outside for visual alignment */
+        }
+
+        .carousel-scrollbar {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        .scrollbar-thumb {
+            height: 100%;
+            width: 20%;
+            /* Adjust based on number of cards and visible cards */
+            background-color: #FF4D7A;
+            border-radius: 5px;
+            position: relative;
+            left: 0;
+            transition: left 0.3s ease;
+        }
+
+        /* Latest from Newfront Section */
+        .latest-from-newfront-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 2rem;
+            text-align: start;
+        }
+
+        .latest-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .latest-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .latest-card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .latest-card-content {
+            padding: 1.5rem;
+            color: #fff;
+        }
+
+        .latest-card-category {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #FF4D7A;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .latest-card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .latest-card-description {
+            font-size: 0.95rem;
+            color: #f0f0f0;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .section-title,
+            .talent-tech-title,
+            .built-to-scale-title {
+                font-size: 2.5rem;
+                text-align: center !important;
+            }
+
+            .section-description {
+                text-align: center !important;
+            }
+
+            .approach-title-white,
+            .latest-from-newfront-title {
+                font-size: 2.8rem;
+            }
+
+            .numbers-title-white,
+            .numbers-description-white {
+                text-align: center !important;
+            }
+
+            .built-to-scale-image-row {
+                flex-direction: column;
+            }
+
+            .img-small,
+            .img-large {
+                max-width: 80%;
+                margin-bottom: 1rem;
+            }
+
+            .img-large:not(:last-child) {
+                margin-right: 0 !important;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .section-title,
+            .talent-tech-title,
+            .built-to-scale-title {
+                font-size: 2rem;
+            }
+
+            .approach-title-white,
+            .latest-from-newfront-title {
+                font-size: 2rem;
+            }
+
+            .industry-card {
+                width: 200px;
+            }
+
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            background-color: #2c3e50; /* Dark blue-grey */
+            color: #ecf0f1; /* Light grey text */
+            padding-top: 3rem;
+            padding-bottom: 2rem;
+            position: relative;
+            z-index: 0; /* Ensure it stays behind floating elements if any */
+        }
+
+        .floating-footer-inner {
+            background-color: #34495e; /* Slightly lighter dark blue-grey for inner container */
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            padding: 2.5rem 0;
+            width: 95%; /* Adjust as needed */
+            max-width: 1400px; /* Max width to control size on large screens */
+            box-shadow: 0 -0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-logo svg {
+            fill: #FF4D7A; /* Pink color for the logo */
+            width: 50px;
+            height: 50px;
+        }
+
+        .footer-tagline {
+            font-size: 1.3rem;
+            font-weight: bold;
+            line-height: 1.4;
+            color: #FF4D7A; /* Pink for the tagline */
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #ecf0f1;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #FF4D7A; /* Pink on hover */
+        }
+
+        .footer-links li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #FF4D7A; /* Pink on hover */
+        }
+
+        .footer-divider {
+            border-color: rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-copyright {
+            font-size: 0.9rem;
+            color: #bdc3c7; /* Lighter grey for copyright */
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-legal-links li {
+            margin-right: 1rem;
+        }
+
+        .footer-legal-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-legal-links a:hover {
+            color: #FF4D7A;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.85rem;
+            color: #95a5a6; /* Even lighter grey for disclaimer */
+            line-height: 1.5;
+        }
+
+        /* Scroll to top button */
+        .scroll-to-top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FF4D7A;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive Footer Adjustments */
+        @media (max-width: 767.98px) {
+            .floating-footer-inner {
+                width: 100%;
+                border-radius: 0;
+                padding: 2rem 0;
+            }
+
+            .footer-top-section {
+                text-align: center;
+            }
+
+            .footer-logo {
+                display: flex;
+                justify-content: center;
+            }
+
+            .social-icons {
+                text-align: center;
+                margin-top: 2rem !important;
+            }
+
+            .footer-links {
+                padding-left: 0;
+                text-align: center;
+            }
+
+            .footer-legal-links {
+                padding-left: 0;
+                text-align: center;
+            }
+
+            .footer-legal-links li {
+                display: block;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .footer-copyright,
+            .footer-disclaimer {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <section class="by-the-numbers-section py-5">
+            <div class="container">
+                <div class="row align-items-center mb-5">
+                    <div class="col-lg-6">
+                        <h2 class="section-title text-start"
+                            style="font-family: Georgia, serif; font-size: 3rem; font-weight: bold;">By the Numbers
+                        </h2>
+                    </div>
+                    <div class="col-lg-6 text-lg-start">
+                        <p class="section-description">The data speaks for itself. From our large roster of established
+                            and growing clients to our stellar client retention rate—we build relationships that last.
+                        </p>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                        <div class="card h-100 rounded-4 border-0 shadow-sm p-4 text-center">
+                            <div class="d-flex justify-content-center mb-3">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF4D7A"
+                                    xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title-premium-icon">
+                                    <title id="title-premium-icon">Premium icon</title>
+                                    <path
+                                        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5Z"
+                                        fill="#FF4D7A" />
+                                </svg>
+                            </div>
+                            <h3 class="card-value">$3.1B</h3>
+                            <p class="card-label">in annual premiums placed</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 rounded-4 border-0 shadow-sm p-4 text-center">
+                            <div class="d-flex justify-content-center mb-3">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF4D7A"
+                                    xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title-unicorn-icon">
+                                    <title id="title-unicorn-icon">Unicorn icon</title>
+                                    <path
+                                        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5Z"
+                                        fill="#FF4D7A" />
+                                </svg>
+                            </div>
+                            <h3 class="card-value">~20%</h3>
+                            <p class="card-label">U.S. unicorns represented</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100 rounded-4 border-0 shadow-sm p-4 text-center">
+                            <div class="d-flex justify-content-center mb-3">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="#FF4D7A"
+                                    xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title-public-icon">
+                                    <title id="title-public-icon">Public company icon</title>
+                                    <path
+                                        d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5Z"
+                                        fill="#FF4D7A" />
+                                </svg>
+                            </div>
+                            <h3 class="card-value">500+</h3>
+                            <p class="card-label">public company experience</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="talent-tech-section py-5">
+            <div class="animated-divider"></div>
+            <div class="container talent-tech-container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <img src="image/talent meet tech.jpg" alt="A team collaborating in a modern office, representing talent meeting technology."
+                            class="img-fluid talent-tech-image" loading="lazy">
+                    </div>
+                    <div class="col-lg-6">
+                        <p class="section-label">EMPOWERED EXPERTISE</p>
+                        <h2 class="talent-tech-title">Talent Meets Tech</h2>
+                        <p class="talent-tech-description">
+                            Technology should enhance human expertise not replace<br>
+                            it. By equipping our elite insurance talent with tech, we’re<br>
+                            creating a competitive edge for our people and clients. For<br>
+                            example:
+                        </p>
+                        <ul class="talent-tech-bullets list-unstyled">
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Paperless onboarding: our digital interface
+                                captures structured client data, providing more accurate submissions and saving time
+                            </li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Data-driven placement: armed with deep
+                                insights our experts find the right insurance partners for every client</li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Seamless service: convenient and continuous
+                                service, payments, and updates can be made through a secure platform, available 24/7
+                            </li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Intelligent claims advocacy: experienced
+                                claims advocates leverage proprietary analytics tools to resolve claims and reduce the
+                                total cost of risk</li>
+                        </ul>
+                        <div class="d-flex flex-column mt-4">
+                            <a href="#" class="btn btn-pink-outline mb-3" role="button" aria-label="Learn more about Navigator for Total Rewards">Navigator for Total Rewards <i
+                                    class="fas fa-arrow-right ms-2" aria-hidden="true"></i></a>
+                            <a href="#" class="btn btn-pink-outline" role="button" aria-label="Learn more about Navigator for Business Insurance">Navigator for Business Insurance <i
+                                    class="fas fa-arrow-right ms-2" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="built-to-scale-section py-5">
+            <div class="animated-divider"></div>
+            <div class="container built-to-scale-container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-10">
+                        <p class="section-label">GALVANIZED FOR GROWTH</p>
+                        <h2 class="built-to-scale-title">Built to Scale</h2>
+                        <p class="built-to-scale-description">
+                            Our highly-tenured team of experts support clients through<br>
+                            their growth and business evolution at a variety of<br>
+                            milestones with solutions that fit their needs—from early<br>
+                            stage to mature enterprise.
+                        </p>
+                    </div>
+                </div>
+                <div class="row align-items-center justify-content-center mt-5">
+                    <div class="col-lg-6 order-lg-1 order-2 text-lg-start text-center">
+                        <ul class="built-to-scale-bullets list-unstyled">
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> From start-up to IPO: we have worked with
+                                hundreds of early-stage companies, navigating funding rounds, hockey-stick growth, IPOs,
+                                and more</li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Going global: enabled by the Worldwide
+                                Broker Network (WRBN), we provide deep, country-specific risk assessments in 100 markets
+                            </li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Solutions that scale: our platform and
+                                extensive network of vendor partners meet you where you are</li>
+                            <li><i class="fas fa-asterisk bullet-pink" aria-hidden="true"></i> Client-first model: we put you first by
+                                operating as an extension of your team when you need it most</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 order-lg-2 order-1 d-flex flex-column align-items-center mb-4 mb-lg-0">
+                        <div class="built-to-scale-image-row mb-4">
+                            <img src="image/person 1.webp" alt="A smiling woman in a professional setting."
+                                class="img-fluid built-to-scale-image img-small" loading="lazy">
+                        </div>
+                        <div class="built-to-scale-image-row">
+                            <img src="image/person 3.webp" alt="A woman working on a tablet, focused."
+                                class="img-fluid built-to-scale-image img-large me-3" loading="lazy">
+                            <img src="image/person 2.webp" alt="A man looking up thoughtfully."
+                                class="img-fluid built-to-scale-image img-large" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="our-approach-section" aria-label="Our Approach to Insurance">
+            <video autoplay muted loop class="background-video" preload="auto">
+                <source src="videos/insurance.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay"></div>
+            <div class="container our-approach-content">
+                <div class="row justify-content-center text-center py-5">
+                    <div class="col-lg-8">
+                        <h2 class="approach-title-white">Get to Know<br>Newfront</h2>
+                    </div>
+                </div>
+
+                <div class="animated-divider white-divider my-5"></div>
+
+                <div class="row justify-content-center text-center py-5">
+                    <div class="col-lg-8">
+                        <h2 class="approach-title-white">Using AI to<br>Improve the<br>Client Experience</h2>
+                        <p class="approach-description-white">Newfront is building breakthrough AI to drive client
+                            insights
+                            and free our teams to do the strategic work they were built to do.</p>
+                        <a href="#" class="btn btn-light-outline mt-4" role="button" aria-label="Learn more about our AI solutions">Learn More About AI <i
+                                class="fas fa-arrow-right ms-2" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+
+                <div class="animated-divider white-divider my-5"></div>
+
+                <div class="row justify-content-center text-center py-5">
+                    <div class="col-lg-10">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 text-lg-start mb-4 mb-lg-0">
+                                <h3 class="numbers-title-white">By the Numbers</h3>
+                            </div>
+                            <div class="col-lg-6 text-lg-start">
+                                <p class="numbers-description-white">The data speaks for itself. From our large roster of
+                                    established and growing clients to our stellar client retention rate—we build
+                                    relationships that last.</p>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-4 mb-4">
+                                <div class="number-card" role="region" aria-label="Annual premiums placed">
+                                    <i class="fas fa-info-circle number-icon" aria-hidden="true"></i>
+                                    <div class="number-value">$3.1B</div>
+                                    <div class="number-label">in annual premium placed</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="number-card" role="region" aria-label="US unicorns represented">
+                                    <i class="fas fa-star number-icon" aria-hidden="true"></i>
+                                    <div class="number-value">~20%</div>
+                                    <div class="number-label">U.S. unicorns represented</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="number-card" role="region" aria-label="Public company experience">
+                                    <i class="fas fa-trophy number-icon" aria-hidden="true"></i>
+                                    <div class="number-value">500+</div>
+                                    <div class="number-label">public company experience</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animated-divider white-divider my-5"></div>
+
+                <div class="row justify-content-center text-center py-5">
+                    <div class="col-lg-10">
+                        <h2 class="approach-title-white">Explore Our Industries<br>and Services</h2>
+                        <div class="industry-carousel-wrapper">
+                            <div class="industry-carousel" role="region" aria-label="Industry categories carousel" tabindex="0">
+                                <div class="industry-card" role="group" aria-label="Agriculture Industry">
+                                    <img src="image/agriculture.jfif" alt="Fields of crops representing agriculture" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Agriculture</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Automotive Industry">
+                                    <img src="image/automotive.jfif" alt="A modern car, representing the automotive industry" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Automotive</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Construction Industry">
+                                    <img src="image/construction.jfif" alt="A construction site with scaffolding and cranes" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Construction</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Financial Industry">
+                                    <img src="image/finance.webp" alt="Stacks of coins and financial charts" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Financial</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Healthcare Industry">
+                                    <img src="image/healthcare.jfif" alt="Medical instruments and a doctor, symbolizing healthcare" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Healthcare</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Hospitality Industry">
+                                    <img src="image/hospitality.webp" alt="A luxurious hotel lobby, representing hospitality" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Hospitality</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Manufacturing Industry">
+                                    <img src="image/manufacturing.webp" alt="Machinery in a factory, depicting manufacturing" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Manufacturing</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Non-Profit Industry">
+                                    <img src="image/non profit.jpg" alt="Hands joined in a circle, symbolizing non-profit organizations" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Non-Profit</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Professional Services Industry">
+                                    <img src="image/professional services.webp" alt="People collaborating in a meeting, representing professional services"
+                                        class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Professional Services</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Technology Industry">
+                                    <img src="image/technology.webp" alt="Abstract circuit board and digital data, representing technology" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Technology</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Life Science Industry">
+                                    <img src="image/life science.png" alt="Microscope and lab equipment, symbolizing life science" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Life Science</div>
+                                </div>
+                                <div class="industry-card" role="group" aria-label="Cannabis Industry">
+                                    <img src="image/wholesale.jfif" alt="Cannabis plants, representing the cannabis industry" class="img-fluid" loading="lazy">
+                                    <div class="industry-title">Cannabis</div>
+                                </div>
+                            </div>
+                            <div class="carousel-nav">
+                                <button class="carousel-btn prev-btn" aria-label="Previous industry category"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                                <button class="carousel-btn next-btn" aria-label="Next industry category"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                            </div>
+                            <div class="carousel-scrollbar">
+                                <div class="scrollbar-thumb"></div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-light-outline mt-5" role="button" aria-label="See all industries and services">See All <i class="fas fa-arrow-right ms-2" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+
+                <div class="animated-divider white-divider my-5"></div>
+
+                <div class="row justify-content-center text-lg-start py-5">
+                    <div class="col-lg-10">
+                        <h2 class="latest-from-newfront-title">Latest from<br>Newfront</h2>
+                        <div class="row mt-4">
+                            <div class="col-md-4 mb-4">
+                                <div class="latest-card">
+                                    <img src="image/acc.jpg" alt="Young professionals in a meeting" class="img-fluid latest-card-img" loading="lazy">
+                                    <div class="latest-card-content">
+                                        <p class="latest-card-category">COMPANY</p>
+                                        <h5 class="latest-card-title">Young Accounts as an Employee Benefits Broker</h5>
+                                        <p class="latest-card-description">The process of hiring a broker for your
+                                            company's
+                                            employee benefits plan can feel a bit like dating...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="latest-card">
+                                    <img src="image/obr.png" alt="Abstract visualization of data insights" class="img-fluid latest-card-img" loading="lazy">
+                                    <div class="latest-card-content">
+                                        <p class="latest-card-category">INSIGHTS</p>
+                                        <h5 class="latest-card-title">Navigating Your One Big Renewal (OBR)</h5>
+                                        <p class="latest-card-description">One Big Renewal (OBR) is an annual process
+                                            where
+                                            an employer must renew or update their employee benefits plans...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="latest-card">
+                                    <img src="image/sen.webp" alt="Business leaders in a discussion" class="img-fluid latest-card-img" loading="lazy">
+                                    <div class="latest-card-content">
+                                        <p class="latest-card-category">LEADERSHIP</p>
+                                        <h5 class="latest-card-title">Sequoia & Evergreen Business: Why People Culture
+                                            and
+                                            Plan Sponsors Benefit From...</h5>
+                                        <p class="latest-card-description">While traditional insurance brokers
+                                            primarily
+                                            focus on simply placing insurance, Evergreen Insurance Services...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="site-footer py-3">
+        <div class="floating-footer-inner mx-auto">
+            <div class="container-fluid">
+                <div class="row footer-top-section pb-4 mb-4">
+                    <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                        <div class="footer-logo mb-3">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="footer-logo-title">
+                                <title id="footer-logo-title">Newfront Logo</title>
+                                <path
+                                    d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12ZM12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5Z"
+                                    fill="#ff4d7a" />
+                                <path
+                                    d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM12 18.5C8.41015 18.5 5.5 15.5898 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C15.5898 5.5 18.5 8.41015 18.5 12C18.5 15.5898 15.5898 18.5 12 18.5Z"
+                                    fill="#ff4d7a" />
+                            </svg>
+                        </div>
+                        <p class="footer-tagline">A Brokerage for<br>the 21st Century</p>
+                        <div class="social-icons mt-4">
+                            <a href="https://www.linkedin.com" class="social-icon" aria-label="LinkedIn profile"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                            <a href="https://www.twitter.com" class="social-icon" aria-label="X (formerly Twitter) profile"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+                            <a href="https://www.facebook.com" class="social-icon" aria-label="Facebook page"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                            <a href="https://www.instagram.com" class="social-icon" aria-label="Instagram profile"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3 mb-lg-0">
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Careers</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3 mb-lg-0">
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="#">Events</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-12">
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="#">Insights</a></li>
+                            <li><a href="#">Login</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="footer-divider">
+                <div class="row footer-bottom-section pt-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <p class="footer-copyright">&copy; <?php echo date("Y"); ?> Newfront – License #0H5500</p>
+                        <ul class="list-inline footer-legal-links mt-2">
+                            <li class="list-inline-item"><a href="#">Privacy</a></li>
+                            <li class="list-inline-item"><a href="#">Terms</a></li>
+                            <li class="list-inline-item"><a href="#">Sitemap</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <ul class="list-inline footer-legal-links mb-1">
+                            <li class="list-inline-item"><a href="#">Do Not Sell My Personal Information (CA)</a></li>
+                            <li class="list-inline-item"><a href="#">Limit Use of My Personal Information (CA)</a></li>
+                        </ul>
+                        <p class="footer-disclaimer mt-2">
+                            We are transforming the risk management, business insurance, total rewards, and retirement
+                            services space through the combination of elite expertise and cutting-edge technology.
+                            Newfront Insurance Services is a trade name licensed to sell insurance products in all 50
+                            states, the District of Columbia, and Puerto Rico. See the link for a list of our licenses.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <button id="scrollToTopBtn" class="scroll-to-top-btn" aria-label="Scroll to top">
+        <i class="fas fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        // Inline JavaScript from previous response to ensure full functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const carousel = document.querySelector('.industry-carousel');
+            const prevBtn = document.querySelector('.carousel-btn.prev-btn');
+            const nextBtn = document.querySelector('.carousel-btn.next-btn');
+            const scrollbarThumb = document.querySelector('.scrollbar-thumb');
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+            const scrollAmount = 300; // Adjust as needed
+
+            function updateScrollbarThumb() {
+                if (carousel.scrollWidth === carousel.clientWidth) {
+                    scrollbarThumb.style.width = '100%'; // Full width if no scroll
+                    scrollbarThumb.style.left = '0px';
+                    return;
+                }
+                const scrollPercentage = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
+                const thumbWidth = (carousel.clientWidth / carousel.scrollWidth) * carousel.offsetWidth;
+                const thumbPosition = scrollPercentage * (carousel.offsetWidth - thumbWidth);
+
+                scrollbarThumb.style.width = `${thumbWidth}px`;
+                scrollbarThumb.style.left = `${thumbPosition}px`;
+            }
+
+            function toggleScrollToTopButton() {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
+            }
+
+            // Initial thumb position and scroll button visibility
+            updateScrollbarThumb();
+            toggleScrollToTopButton();
+
+            // Event Listeners
+            carousel.addEventListener('scroll', updateScrollbarThumb);
+
+            prevBtn.addEventListener('click', () => {
+                carousel.scrollBy({
+                    left: -scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                carousel.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            });
+
+            window.addEventListener('scroll', toggleScrollToTopButton);
+
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Smooth scrolling for anchor links (if any)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

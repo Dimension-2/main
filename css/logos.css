@@ -1,0 +1,51 @@
+/* Basic styling for the container to see the effect */
+.client-logos-marquee-container {
+    width: 100%;
+    overflow: hidden; /* Important for marquee effect */
+    background-color: #f0f0f0; /* Just for visibility */
+    padding: 20px 0;
+}
+
+.client-logos-marquee {
+    display: flex;
+    white-space: nowrap; /* Keep items on one line for marquee */
+    /* Add animation properties here if you want a moving marquee effect */
+    /* Example for a simple left-to-right scroll: */
+    /* animation: scroll-left 30s linear infinite; */
+}
+
+/* Define the keyframes for the marquee animation (optional) */
+/*
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+*/
+
+.client-logo-item {
+    /* Define a fixed width and height for each box */
+    width: 150px; /* Example width */
+    height: 100px; /* Example height - THIS IS CRUCIAL */
+    flex-shrink: 0; /* Prevent items from shrinking in a flex container */
+    margin: 0 10px; /* Space between items */
+    border: 1px solid #ddd; /* Just for visibility of the box boundaries */
+    overflow: hidden; /* Hide parts of the image that spill over */
+
+    /* Optional: Use flexbox to perfectly center content if image is smaller or has different aspect ratio */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.client-logo-item img {
+    /* These styles will make the image fill and crop within its parent .client-logo-item */
+    width: 100%; /* Make image take 100% of parent's width */
+    height: 100%; /* Make image take 100% of parent's height */
+    object-fit: cover; /* This is the key: scales the image to fill, cropping if needed */
+    object-position: center; /* Centers the image content within the visible area */
+    display: block; /* Removes any extra space below inline-block images */
+}

@@ -1,0 +1,867 @@
+/* --- SECTIONS STYLING --- */
+
+/* --- Custom styles for the navbar --- */
+.custom-navbar {
+    background-color: var(--navbar-bg) !important; /* Darker background for navbar */
+    border-radius: 12px;
+    margin-bottom: 20px !important;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow on dark navbar */
+    position: relative;
+    width: calc(100% - 24px);
+    max-width: 1200px;
+    z-index: 1000;
+}
+
+.custom-navbar .navbar-brand img {
+    /* Specific styling for your logo */
+}
+
+.custom-navbar .nav-link {
+    color: var(--navbar-link-dark) !important; /* Light text for links on dark navbar */
+    font-weight: 500;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.custom-navbar .nav-link:hover {
+    color: var(--navbar-link-hover) !important; /* Pink on hover for navbar links */
+}
+
+.custom-navbar .nav-link.btn-primary {
+    background-color: var(--pink-accent) !important; /* Pink for the button */
+    border-color: var(--pink-accent) !important;
+    color: var(--white) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-navbar .nav-link.btn-primary:hover {
+    background-color: var(--button-hover-pink) !important; /* Darker pink on button hover */
+    border-color: var(--button-hover-pink) !important;
+}
+
+.custom-navbar .dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 5px;
+    background-color: var(--white); /* Dropdown menu remains white */
+}
+
+.custom-navbar .dropdown-item {
+    color: var(--dark-text); /* Dark text on white dropdown */
+}
+
+.custom-navbar .dropdown-item:hover {
+    background-color: var(--light-grey); /* Light grey hover on white dropdown */
+    color: var(--dark-text);
+}
+
+@media (min-width: 992px) {
+    .custom-navbar .navbar-nav .nav-item:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+}
+
+/* --- Hero Section (De-Risking Human Progress) - NEW VERSION --- */
+.hero-section {
+    width: 100%;
+    /* The main section might need a min-height or padding to accommodate content */
+    padding-bottom: 80px; /* Space for the wave effect */
+    position: relative; /* For absolute positioning of the background wave */
+    overflow: hidden; /* Important for containing background elements */
+    background-color: var(--body-bg); /* Ensure background is black */
+    display: flex; /* Make the section itself a flex container */
+    justify-content: center; /* Center its content */
+    align-items: center; /* Vertically align its content */
+    min-height: 700px; /* Ensure sufficient height for the hero section */
+}
+
+/* Background wave effect */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px; /* Height of the wave image */
+    background-image: url('image_8daa65.png'); /* Your wavy background image */
+    background-size: cover; /* Cover the area, or '100% 100%' to stretch */
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 1; /* Above other content if needed, but below the main content box */
+}
+
+.hero-content {
+    display: flex; /* Enables flexbox for children (text and image) */
+    flex-direction: row; /* Default: text and image side-by-side */
+    justify-content: space-between; /* Pushes text left, image right */
+    align-items: center; /* Vertically centers text and image */
+    max-width: 1200px; /* Container width for the content inside */
+    width: 100%;
+    padding: 0 20px; /* Padding on sides for smaller screens */
+    box-sizing: border-box;
+    position: relative; /* Ensure it's above the wave background */
+    z-index: 2;
+}
+
+.hero-text {
+    flex: 1; /* Allows text to take available space */
+    max-width: 60%; /* Limit text width to prevent it from getting too wide */
+    text-align: left; /* Align text to the left as per the image */
+    padding-right: 40px; /* Space between text and image */
+    color: var(--light-text);
+}
+
+.hero-text h1 {
+    font-size: 3.8rem; /* Larger font for main title */
+    font-weight: 700;
+    margin-bottom: 0;
+    color: var(--white);
+    line-height: 1.1;
+}
+
+.hero-text h2.display-5 {
+    font-size: 3.2rem; /* Larger font for sub-title */
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    color: var(--white);
+    line-height: 1.1;
+}
+
+.hero-text .hero-subtext {
+    font-size: 1.35rem; /* Slightly larger subtext */
+    line-height: 1.6;
+    margin-bottom: 40px;
+    color: var(--text-muted-light);
+    max-width: 600px; /* Limit width of subtext for readability */
+}
+
+.hero-text .btn-pink {
+    background-color: var(--accent-pink);
+    border-color: var(--accent-pink);
+    color: var(--white);
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex; /* For better button alignment and icon spacing */
+    align-items: center;
+    gap: 10px; /* Space between text and icon */
+}
+
+.hero-text .btn-pink:hover {
+    background-color: var(--button-hover-pink);
+    border-color: var(--button-hover-pink);
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Image container for the circular image */
+.hero-image-container {
+    flex: 0 0 auto; /* Prevent image container from shrinking */
+    width: 450px; /* Fixed width for the entire image structure */
+    height: 450px; /* Fixed height for the entire image structure */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40px; /* Space between text and image */
+    position: relative;
+}
+
+.hero-image-inner {
+    width: 100%; /* Take full width of container */
+    height: 100%; /* Take full height of container */
+    overflow: hidden;
+    border-radius: 50%; /* Perfect circle */
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 0 8px rgba(255, 255, 255, 0.05); /* Stronger shadow with subtle outer glow */
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out; /* Smooth transition on hover */
+    background: linear-gradient(135deg, #1e1e1e, #0a0a0a); /* Subtle gradient background */
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Finer border for the circle */
+}
+
+.hero-image-inner:hover {
+    transform: scale(1.03); /* Slightly enlarge on hover */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.hero-image-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the circular container */
+    display: block;
+    filter: brightness(0.9) contrast(1.1); /* Subtle image adjustments */
+    transition: filter 0.4s ease-out;
+}
+
+.hero-image-inner:hover img {
+    filter: brightness(1) contrast(1);
+}
+
+/* Optional: Adding a smaller, subtle circle behind the main image */
+.hero-image-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1); /* Slightly larger than the main image */
+    width: 100%; /* Inherit size from parent to scale from */
+    height: 100%; /* Inherit size from parent to scale from */
+    border: 2px solid rgba(255, 255, 255, 0.03); /* Very subtle outer ring */
+    border-radius: 50%;
+    z-index: -1; /* Behind the main image */
+    opacity: 0.7;
+    animation: pulseBorder 3s infinite ease-in-out; /* Subtle animation */
+}
+
+@keyframes pulseBorder {
+    0% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+}
+
+/* Responsive adjustments for Hero Section */
+@media (max-width: 992px) {
+    .hero-content {
+        flex-direction: column; /* Stack text and image vertically */
+        padding: 0 15px;
+    }
+    .hero-text {
+        max-width: 100%; /* Allow text to take full width */
+        padding-right: 0;
+        margin-bottom: 40px; /* Space between text and image when stacked */
+        text-align: center; /* Center text when stacked */
+    }
+    .hero-text h1,
+    .hero-text h2.display-5,
+    .hero-text .hero-subtext,
+    .hero-text .btn-pink {
+        text-align: center; /* Ensure text is centered */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero-image-container {
+        width: 350px; /* Smaller image size on tablets */
+        height: 350px;
+        margin-left: 0; /* Remove left margin when stacked */
+        margin-bottom: 20px; /* Space between image and text when stacked */
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: auto; /* Allow height to adjust */
+        padding-bottom: 50px;
+    }
+    .hero-section::before { /* Adjust wave height */
+        height: 100px;
+    }
+    .hero-text h1 {
+        font-size: 2.8rem;
+    }
+    .hero-text h2.display-5 {
+        font-size: 2.4rem;
+    }
+    .hero-text .hero-subtext {
+        font-size: 1.1rem;
+    }
+    .hero-image-container {
+        width: 280px; /* Smaller image size on mobile */
+        height: 280px;
+    }
+    .hero-image-inner {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 5px rgba(255, 255, 255, 0.05);
+    }
+    .hero-image-inner:hover {
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 0 7px rgba(255, 255, 255, 0.1);
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding-bottom: 30px;
+    }
+    .hero-section::before {
+        height: 80px;
+        background-size: cover;
+    }
+    .hero-text h1 {
+        font-size: 2.2rem;
+    }
+    .hero-text h2.display-5 {
+        font-size: 1.8rem;
+    }
+    .hero-text .hero-subtext {
+        font-size: 0.95rem;
+        margin-bottom: 30px;
+    }
+    .hero-text .btn-pink {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+    .hero-image-container {
+        width: 240px; /* Even smaller image on small phones */
+        height: 240px;
+    }
+}
+
+/* --- Dark Grey Rounded Box: De-Risking Alternative Financing & Clients Trust Newfront --- */
+.alternative-financing-section-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.alternative-financing-content-box {
+    background-color: var(--dark-grey-box-bg); /* Dark grey box background */
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+    color: var(--light-text); /* Light text on dark grey background */
+    margin-bottom: 40px;
+}
+
+.alternative-financing-content-box h1 {
+    color: var(--light-text); /* Light text */
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 2.5rem;
+}
+
+.alternative-financing-content-box p {
+    color: var(--text-muted-light); /* Muted light text */
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+/* Styling for the Clients Trust Newfront section */
+.alternative-financing-content-box .clients-section-inner {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-dark); /* Dark border for separation */
+    text-align: left;
+}
+
+.alternative-financing-content-box .clients-section-inner h2 {
+    color: var(--light-text);
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 2rem;
+}
+
+.alternative-financing-content-box .clients-section-inner p {
+    color: var(--text-muted-light);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Responsive adjustments for alternative-financing-content-box */
+@media (max-width: 1200px) {
+    .alternative-financing-content-box {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .alternative-financing-content-box {
+        padding: 25px;
+    }
+    .alternative-financing-content-box h1 {
+        font-size: 2rem;
+    }
+    .alternative-financing-content-box p {
+        font-size: 1rem;
+    }
+    .alternative-financing-content-box .clients-section-inner {
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .alternative-financing-content-box {
+        padding: 20px;
+    }
+    .alternative-financing-content-box h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- Background Logo for "Clients Trust Newfront" --- */
+.clients-header-row {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 30px;
+    min-height: 150px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.clients-header-row::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 300px;
+    background-image: url('path/to/your/newfront_bg_logo.png'); /* You might need a light version of your logo */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.05; /* Adjusted opacity for visibility on dark backgrounds */
+    z-index: -1;
+}
+
+.section-title-clients,
+.section-description-clients {
+    position: relative;
+    z-index: 2;
+    color: var(--light-text); /* Light text for contrast */
+}
+.section-title-clients {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.section-description-clients {
+    font-size: 1.1rem;
+    color: var(--text-muted-light); /* Muted light grey */
+}
+
+/* Responsive adjustments for clients-header-row */
+@media (max-width: 992px) {
+    .clients-header-row::before {
+        width: 500px;
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .clients-header-row::before {
+        width: 400px;
+        height: 200px;
+    }
+    .section-title-clients,
+    .section-description-clients {
+        color: var(--light-text); /* Ensure color consistency */
+    }
+}
+
+@media (max-width: 576px) {
+    .clients-header-row::before {
+        width: 250px;
+        height: 120px;
+    }
+    .section-title-clients {
+        font-size: 2rem;
+    }
+    .section-description-clients {
+        font-size: 0.9rem;
+    }
+}
+
+/* --- Client Logos Marquee --- */
+.client-logos-marquee-container {
+    width: 100%;
+    overflow: hidden; /* Important for marquee effect */
+    background-color: transparent; /* Removed fixed color, let parent determine */
+    padding: 20px 0;
+    margin-bottom: 60px; /* Added from original code */
+}
+
+.client-logos-marquee {
+    display: flex;
+    white-space: nowrap; /* Keep items on one line for marquee */
+    animation: marquee 30s linear infinite; /* Integrated animation */
+}
+
+/* Define the keyframes for the marquee animation */
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+.client-logo-item {
+    width: 180px; /* Adjusted from original media.css */
+    height: 90px; /* Adjusted from original media.css */
+    flex-shrink: 0; /* Prevent items from shrinking in a flex container */
+    margin: 0 15px; /* Adjusted from original media.css */
+    border: 1px solid var(--border-dark); /* Dark border for contrast on black */
+    border-radius: 8px; /* Added from original code */
+    background-color: var(--body-bg); /* Match body background or dark grey */
+    overflow: hidden; /* Hide parts of the image that spill over */
+    box-shadow: 0 2px 5px rgba(255,255,255,0.05); /* Subtle light shadow */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.client-logo-item img {
+    width: 100%; /* Make image take 100% of parent's width */
+    height: 100%; /* Make image take 100% of parent's height */
+    object-fit: contain; /* This is the key: scales the image to fill, cropping if needed */
+    display: block; /* Removes any extra space below inline-block images */
+    padding: 10px; /* Added from original code */
+    filter: grayscale(100%) brightness(200%); /* Adjust logo for dark background, increase brightness */
+}
+
+/* Responsive adjustments for client-logos-marquee */
+@media (max-width: 768px) {
+    .client-logo-item {
+        width: 120px;
+        height: 60px;
+        margin: 0 10px;
+        border-color: var(--border-dark);
+    }
+}
+
+@media (max-width: 576px) {
+    .client-logo-item {
+        width: 100px;
+        height: 50px;
+        margin: 0 8px;
+        border-color: var(--border-dark);
+    }
+}
+
+/* --- Styles for the Industry Carousel with Navigation Buttons --- */
+.approach-title-white {
+    color: var(--white); /* White text for this title */
+    margin-bottom: 2rem;
+    font-size: 2.8rem;
+    font-weight: 700;
+}
+
+.industry-carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.industry-carousel {
+    display: flex;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+}
+
+/* Hide scrollbar for Chrome, Safari, Opera */
+.industry-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.industry-card {
+    flex: 0 0 auto;
+    width: 250px;
+    margin: 0 15px;
+    background-color: var(--dark-grey-box-bg); /* Use dark grey box background for cards */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    color: var(--white);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.industry-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.industry-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.industry-title {
+    padding: 15px 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+    padding: 0 20px;
+    z-index: 10;
+}
+
+.carousel-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--white);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    pointer-events: auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.carousel-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.carousel-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- White Rounded Box: De-Risking Alternative Financing (now on a dark background) --- */
+.derisking-content-container {
+    background-color: var(--white); /* White background */
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    padding: 50px 60px;
+    max-width: 900px;
+    width: 100%;
+    text-align: left;
+    color: var(--dark-text); /* Dark text for readability on white */
+    margin-bottom: 40px;
+    border: 1px solid var(--border-light); /* Light border for subtle effect on white */
+}
+
+.derisking-content-container .section-title {
+    color: var(--dark-text); /* Dark text for title on white background */
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 2.8rem;
+    line-height: 1.2;
+}
+
+.derisking-content-container p {
+    color: var(--text-muted-dark); /* Muted dark grey for paragraph text */
+    line-height: 1.7;
+    font-size: 1.15rem;
+    margin-bottom: 15px;
+}
+
+.derisking-content-container p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* --- Our Approach Section Styling --- */
+.our-approach-new-section {
+    background-color: var(--light-grey-bg); /* Now explicitly a light background section */
+    padding: 60px 0;
+    color: var(--dark-text); /* Dark text for this light background section */
+}
+
+.our-approach-new-section .section-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 2.8rem;
+    color: var(--dark-text);
+    margin-bottom: 20px;
+    text-align: center; /* Ensure title is centered */
+}
+
+.our-approach-new-section p {
+    font-size: 1.1rem;
+    color: var(--medium-text); /* Muted grey for descriptions */
+    line-height: 1.7;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Ensure paragraphs are centered */
+}
+
+/* Card Styling for Our Approach */
+.approach-card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    box-shadow: 0 5px 15px var(--shadow-light) !important; /* Light shadow for cards on light background */
+    border: 1px solid var(--border-light) !important; /* Light border */
+    background-color: var(--card-bg); /* White card background */
+    height: 100%;
+    padding: 25px !important;
+    color: var(--dark-text); /* Dark text inside card */
+}
+
+.approach-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px var(--shadow-medium) !important; /* Medium shadow on hover */
+}
+
+.approach-card .card-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--dark-text); /* Dark for card title */
+    margin-bottom: 15px;
+}
+
+.approach-card .card-text {
+    color: var(--medium-text); /* Muted grey for card text */
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Icon Circle Styling */
+.bg-pink-custom {
+    background-color: var(--primary-pink-custom) !important; /* Use the specific primary-pink-custom */
+}
+
+.approach-icon-circle {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3); /* Adjusted to match --primary-pink-custom */
+}
+
+.approach-icon {
+    width: 32px;
+    height: 32px;
+}
+
+/* --- De-Risking Alternative Financing Section (Integrated from derisk.css) --- */
+.derisking-alternative-financing-section {
+    position: relative; /* Needed for absolute positioning of background and overlay */
+    padding: 80px 0; /* Adjust vertical padding */
+    color: var(--white); /* Using --white for general light text over dark background */
+    overflow: hidden; /* Ensures background doesn't overflow */
+
+    /* Background Image */
+    background-image: url('path/to/your/background-person-image.png'); /* <=== REPLACE THIS PATH */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat;
+    min-height: 500px; /* Minimum height for the section to show background image */
+    display: flex; /* Use flex to align content easily */
+    align-items: center; /* Vertically center content */
+    justify-content: flex-start; /* Align content to the start (left) */
+}
+
+/* Optional: Overlay to make text more readable */
+.derisking-alternative-financing-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
+    z-index: 0; /* Place behind text content */
+}
+
+/* RENAMED CLASS: This is the content wrapper for the section with a background image */
+.derisking-image-content-wrapper {
+    position: relative; /* Ensures content is above the overlay */
+    z-index: 1; /* Place above the ::before overlay */
+    text-align: left; /* Ensure text alignment within container */
+}
+
+.derisking-text-content {
+    max-width: 600px; /* Limit text width for readability */
+    margin-right: auto; /* Push content to the left if needed */
+    margin-left: 0; /* Ensure it stays left-aligned */
+    padding: 20px; /* Add some padding around the text */
+    /* background-color: rgba(0,0,0,0.3); /* Optional: slight background behind text for more contrast */
+    /* border-radius: 8px; /* Optional: rounded corners for text background */
+}
+
+
+.derisking-alternative-financing-section .section-title {
+    font-family: var(--font-heading); /* Use font variable */
+    font-weight: 700;
+    font-size: 3rem; /* Make it prominent */
+    color: var(--white); /* White text for contrast */
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Optional: text shadow for better readability */
+}
+
+.derisking-alternative-financing-section p {
+    font-size: 1.15rem; /* Slightly larger text */
+    color: var(--text-muted-light); /* Using a variable for muted light text */
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4); /* Optional: text shadow */
+}
+
+/* Responsive Adjustments for derisking section (also integrated) */
+@media (max-width: 992px) {
+    .derisking-alternative-financing-section {
+        min-height: 400px;
+        background-position: 70% center; /* Adjust background position on smaller screens */
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 2.5rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .derisking-alternative-financing-section {
+        min-height: 350px;
+        padding: 60px 0;
+        background-position: 80% center; /* Further adjust background position */
+        justify-content: center; /* Center content horizontally on smaller screens */
+        text-align: center; /* Center text */
+    }
+    .derisking-image-content-wrapper { /* Updated class name */
+        max-width: 80%; /* Wider text content area */
+        margin-left: auto;
+        margin-right: auto; /* Center the text content block */
+        text-align: center;
+        padding: 15px;
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 2rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .derisking-alternative-financing-section {
+        min-height: 300px;
+        padding: 50px 0;
+        background-position: 85% center; /* Even further adjust background position */
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 1.7rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 0.9rem;
+    }
+    .derisking-image-content-wrapper { /* Updated class name */
+        max-width: 90%;
+    }
+}

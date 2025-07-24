@@ -1,0 +1,87 @@
+        /* --- Dark Grey Rounded Box: De-Risking Alternative Financing & Clients Trust Newfront --- */
+.alternative-financing-section-wrapper { /* This wrapper will ensure the box is centered */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px; /* Add some padding around the box from body edge */
+    box-sizing: border-box;
+}
+
+.derisking-content-container { /* This will be your white rounded box */
+    background-color: var(--white); /* White background */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); /* Stronger, elegant shadow */
+    padding: 50px 60px; /* More padding inside the box */
+    max-width: 900px; /* Control the width of the box */
+    width: 100%;
+    text-align: left; /* Content remains left-aligned */
+    color: var(--dark-text); /* Dark text for readability on white */
+    margin-bottom: 40px; /* Space below the box */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle light border */
+}
+
+.derisking-content-container .section-title {
+    color: var(--dark-text); /* Dark text for title on white background */
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 2.8rem; /* Slightly larger and bolder title */
+    line-height: 1.2;
+}
+
+.derisking-content-container p {
+    color: var(--text-muted-dark); /* Muted dark grey for paragraph text */
+    line-height: 1.7;
+    font-size: 1.15rem; /* Slightly larger paragraph text */
+    margin-bottom: 15px; /* Space between paragraphs */
+}
+
+.derisking-content-container p:last-child {
+    margin-bottom: 0; /* Remove bottom margin from last paragraph */
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 992px) {
+    .derisking-content-container {
+        padding: 40px 50px;
+        max-width: 800px;
+    }
+    .derisking-content-container .section-title {
+        font-size: 2.4rem;
+    }
+    .derisking-content-container p {
+        font-size: 1.05rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .derisking-content-container {
+        padding: 30px 30px;
+        border-radius: 15px; /* Slightly smaller border radius on mobile */
+    }
+    .derisking-content-container .section-title {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    .derisking-content-container p {
+        font-size: 1rem;
+    }
+    .alternative-financing-section-wrapper {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .derisking-content-container {
+        padding: 25px 20px;
+        border-radius: 10px;
+    }
+    .derisking-content-container .section-title {
+        font-size: 1.8rem;
+    }
+    .derisking-content-container p {
+        font-size: 0.95rem;
+    }
+    .alternative-financing-section-wrapper {
+        padding: 10px;
+    }
+}

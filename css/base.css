@@ -1,0 +1,135 @@
+/* --- BASE STYLES --- */
+
+/* General Body Styling */
+body {
+    background-color: var(--body-background-light); /* Use the light body background from variables */
+    font-family: var(--font-body); /* Using your font variable */
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center main content blocks horizontally */
+    justify-content: flex-start; /* Align content to the top */
+    padding-top: 80px; /* Consistent space from the top for all pages */
+    box-sizing: border-box; /* Include padding in height/width */
+    color: var(--text-on-light); /* Default body text color to dark for readability on light background */
+    overflow-x: hidden; /* Prevent horizontal scrollbar issues */
+    overflow-y: auto; /* Allow vertical scrolling only when needed */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased; /* Smoother font rendering */
+    -moz-osx-font-smoothing: grayscale; /* Smoother font rendering */
+}
+
+/* Global Heading Styles */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading); /* Using variable for heading font */
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-on-light); /* Headings are dark on light body background */
+}
+
+/* Links */
+a {
+    color: var(--blue-primary); /* Use primary blue for links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--blue-dark); /* Darker blue on hover for links */
+    text-decoration: underline; /* Add underline on hover for clarity */
+}
+
+/* Buttons (General Styles) */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+/* Utility Classes */
+.container-fluid {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1200px; /* Consistent max width for content */
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Sections padding */
+section {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Text selection color */
+::selection {
+    background: var(--blue-primary); /* Blue for selection background */
+    color: var(--color-white); /* White for selection text color */
+}
+::-moz-selection {
+    background: var(--blue-primary); /* Blue for selection background */
+    color: var(--color-white); /* White for selection text color */
+}
+
+/* Form element basic styling */
+input, select, textarea, button {
+    font-family: var(--font-body);
+}
+
+/* Image responsive by default */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Removes extra space below images */
+}
+/* Existing base.css content (keep it) */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa; /* Very light grey background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 20px; /* Increased padding */
+    box-sizing: border-box;
+    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 22v-4H4v4H0v2h4v4h2v-4h4v-2H6zm0 20v-4H4v4H0v2h4v4h2v-4h4v-2H6z" fill="%239C92AC"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); /* Subtle background pattern */
+}
+/* Existing base.css content (keep it) */
+
+body {
+    font-family: 'Lato', sans-serif; /* Changed to Lato from innovations.html */
+    background-color: var(--neutral-bg); /* Changed to neutral-bg from innovations.html */
+    color: var(--text-dark); /* Using text-dark from innovations.html */
+    line-height: 1.7; /* From innovations.html */
+    margin: 0;
+    padding: 80px 20px; /* More overall padding for airiness from innovations.html */
+    display: flex; /* Kept from pre_order for centering container */
+    justify-content: center; /* Kept from pre_order for centering container */
+    align-items: flex-start; /* Aligned to top, but main content is centered via margin */
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll from innovations.html */
+    /* Removed background-image from pre_order.html if it's not global */
+}

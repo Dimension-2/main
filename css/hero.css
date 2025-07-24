@@ -1,0 +1,158 @@
+/* --- Hero Section (De-Risking Human Progress) --- */
+.hero-section {
+    width: 100%;
+    padding-bottom: 80px; /* Space for the wave effect */
+    position: relative; /* For absolute positioning of the background wave */
+    overflow: hidden; /* Important for containing background elements */
+    background-color: var(--body-bg); /* Ensure background is black */
+    display: flex; /* Make the section itself a flex container */
+    justify-content: center; /* Center its content */
+    align-items: center; /* Vertically align its content */
+    min-height: 700px; /* Ensure sufficient height for the hero section */
+}
+
+/* Background wave effect */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px; /* Height of the wave image */
+    background-image: url('image_8daa65.png'); /* Your wavy background image*/
+    background-size: cover; /* Cover the area, or '100% 100%' to stretch */
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 1; /* Above other content if needed, but below the main content box */
+}
+
+.hero-content {
+    display: flex; /* Enables flexbox for children (text and image) */
+    flex-direction: row; /* Default: text and image side-by-side */
+    justify-content: space-between; /* Pushes text left, image right */
+    align-items: center; /* Vertically centers text and image */
+    max-width: 1200px; /* Container width for the content inside */
+    width: 100%;
+    padding: 0 20px; /* Padding on sides for smaller screens */
+    box-sizing: border-box;
+    position: relative; /* Ensure it's above the wave background */
+    z-index: 2;
+}
+
+.hero-text {
+    flex: 1; /* Allows text to take available space */
+    max-width: 60%; /* Limit text width to prevent it from getting too wide */
+    text-align: left; /* Align text to the left as per the image */
+    padding-right: 40px; /* Space between text and image */
+    color: var(--light-text);
+}
+
+.hero-text h1 {
+    font-size: 3.8rem; /* Larger font for main title */
+    font-weight: 700;
+    margin-bottom: 0;
+    color: var(--white);
+    line-height: 1.1;
+}
+
+.hero-text h2.display-5 {
+    font-size: 3.2rem; /* Larger font for sub-title */
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    color: var(--white);
+    line-height: 1.1;
+    font-style: italic; /* Added: Italic for "Human Progress" as in image*/
+}
+
+.hero-text .hero-subtext {
+    font-size: 1.35rem; /* Slightly larger subtext */
+    line-height: 1.6;
+    margin-bottom: 40px;
+    color: var(--text-muted-light);
+    max-width: 600px; /* Limit width of subtext for readability */
+}
+
+.hero-text .btn-pink {
+    background-color: var(--accent-pink); /* Using accent-pink variable*/
+    border-color: var(--accent-pink);
+    color: var(--white);
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-flex; /* For better button alignment and icon spacing */
+    align-items: center;
+    gap: 10px; /* Space between text and icon */
+}
+
+.hero-text .btn-pink:hover {
+    background-color: var(--button-hover-pink); /* Using button-hover-pink variable */
+    border-color: var(--button-hover-pink);
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Image container for the circular image */
+.hero-image-container {
+    flex: 0 0 auto; /* Prevent image container from shrinking */
+    width: 450px; /* Fixed width for the entire image structure */
+    height: 450px; /* Fixed height for the entire image structure */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40px; /* Space between text and image */
+    position: relative;
+}
+
+.hero-image-inner {
+    width: 100%; /* Take full width of container */
+    height: 100%; /* Take full height of container */
+    overflow: hidden;
+    border-radius: 50%; /* Perfect circle*/
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 0 8px rgba(255, 255, 255, 0.05); /* Stronger shadow with subtle outer glow */
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out; /* Smooth transition on hover */
+    background: linear-gradient(135deg, #1e1e1e, #0a0a0a); /* Subtle gradient background */
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Finer border for the circle */
+}
+
+.hero-image-inner:hover {
+    transform: scale(1.03); /* Slightly enlarge on hover */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.hero-image-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the circular container */
+    display: block;
+    filter: brightness(0.9) contrast(1.1); /* Subtle image adjustments */
+    transition: filter 0.4s ease-out;
+}
+
+.hero-image-inner:hover img {
+    filter: brightness(1) contrast(1);
+}
+
+/* Optional: Adding a smaller, subtle circle behind the main image */
+.hero-image-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1); /* Slightly larger than the main image */
+    width: 100%; /* Inherit size from parent to scale from */
+    height: 100%; /* Inherit size from parent to scale from */
+    border: 2px solid rgba(255, 255, 255, 0.03); /* Very subtle outer ring */
+    border-radius: 50%;
+    z-index: -1; /* Behind the main image */
+    opacity: 0.7;
+    animation: pulseBorder 3s infinite ease-in-out; /* Subtle animation */
+}
+
+@keyframes pulseBorder {
+    0% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.7; }
+}

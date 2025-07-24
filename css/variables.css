@@ -1,0 +1,72 @@
+/* --- CSS VARIABLES --- */
+:root {
+    /* Base Colors (Semantic Names) */
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-light-grey: #f8f9fa;
+    --color-dark-grey: #343a40;
+
+    /* Primary Accent Palette (Pink) */
+    --pink-primary: #e74c3c;
+    --pink-dark: #c0392b;
+    --pink-light: #ffebee;
+
+    /* Secondary Accent Palette (Blue) */
+    --blue-primary: #007bff;
+    --blue-dark: #0056b3;
+    --blue-light-border: #e0eaff;
+    --blue-light-hover: #eaf3ff;
+    --focus-border: #3498db;
+    --focus-shadow: rgba(52, 152, 219, 0.25);
+    --light-blue-bg: #e0f2ff;
+
+    /* Text Colors (Semantic Names based on background) */
+    --text-on-light: #2c3e50;
+    --text-on-dark: #f8f9fa;
+    --text-muted-light: #bbb;
+    --text-muted-dark: #7f8c8d;
+    --text-dark-heading: #333333;
+    --footer-text-soft: #95a5a6;
+    --text-medium: #5d6d7e;
+
+    /* Backgrounds (Semantic Names) */
+    --body-background-dark: #1a1e23;
+    --body-background-light: var(--color-light-grey);
+    --neutral-bg: #f5f8fa;
+    --navbar-background: #282c34;
+    --box-background-dark: #282c34;
+    --card-background-light: var(--color-white);
+    --form-bg: var(--color-white);
+    --input-bg: #ecf0f1;
+
+    /* Borders */
+    --border-light: #bdc3c7;
+    --border-dark: rgba(255, 255, 255, 0.1);
+    --border-color: var(--border-light);
+
+    /* Shadows */
+    --shadow-subtle: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0,0,0,0.12);
+    --shadow-deep: rgba(0, 0, 0, 0.15);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    /* Buttons (Using semantic color variables) */
+    --button-primary-bg: var(--pink-primary);
+    --button-primary-hover-bg: var(--pink-dark);
+    --button-primary-text: var(--color-white);
+
+    --button-secondary-bg: var(--blue-primary);
+    --button-secondary-hover-bg: var(--blue-dark);
+    --button-secondary-text: var(--color-white);
+
+    /* Navbar specific */
+    --navbar-link-color: var(--text-on-dark);
+    --navbar-link-hover-color: var(--pink-primary);
+
+    /* Fonts */
+    --font-primary: 'Open Sans', sans-serif;
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Lato', sans-serif;
+    --font-inter: 'Inter', sans-serif;
+    --font-display: 'Playfair Display', serif;
+}

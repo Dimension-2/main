@@ -1,0 +1,130 @@
+/* --- De-Risking Alternative Financing Section --- */
+.derisking-alternative-financing-section {
+    position: relative; /* Needed for absolute positioning of background and overlay */
+    padding: 80px 0; /* Adjust vertical padding */
+    color: var(--card-bg); /* Text color, assuming it's white or light over a dark background */
+    overflow: hidden; /* Ensures background doesn't overflow */
+
+    /* Background Image */
+    background-image: url('path/to/your/background-person-image.png'); /* <=== REPLACE THIS PATH */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat;
+    min-height: 500px; /* Minimum height for the section to show background image */
+    display: flex; /* Use flex to align content easily */
+    align-items: center; /* Vertically center content */
+    justify-content: flex-start; /* Align content to the start (left) */
+}
+
+/* Optional: Overlay to make text more readable */
+.derisking-alternative-financing-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark semi-transparent overlay */
+    z-index: 0; /* Place behind text content */
+}
+
+.derisking-content-container {
+    position: relative; /* Ensures content is above the overlay */
+    z-index: 1; /* Place above the ::before overlay */
+    text-align: left; /* Ensure text alignment within container */
+}
+
+.derisking-text-content {
+    max-width: 600px; /* Limit text width for readability */
+    margin-right: auto; /* Push content to the left if needed */
+    margin-left: 0; /* Ensure it stays left-aligned */
+    padding: 20px; /* Add some padding around the text */
+    /* background-color: rgba(0,0,0,0.3); /* Optional: slight background behind text for more contrast */
+    /* border-radius: 8px; /* Optional: rounded corners for text background */
+}
+
+
+.derisking-alternative-financing-section .section-title {
+    font-family: 'Poppins', sans-serif; /* Consistent with other titles */
+    font-weight: 700;
+    font-size: 3rem; /* Make it prominent */
+    color: var(--card-bg); /* White text for contrast */
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Optional: text shadow for better readability */
+}
+
+.derisking-alternative-financing-section p {
+    font-size: 1.15rem; /* Slightly larger text */
+    color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4); /* Optional: text shadow */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .derisking-alternative-financing-section {
+        min-height: 400px;
+        background-position: 70% center; /* Adjust background position on smaller screens */
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 2.5rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .derisking-alternative-financing-section {
+        min-height: 350px;
+        padding: 60px 0;
+        background-position: 80% center; /* Further adjust background position */
+        justify-content: center; /* Center content horizontally on smaller screens */
+        text-align: center; /* Center text */
+    }
+    .derisking-text-content {
+        max-width: 80%; /* Wider text content area */
+        margin-left: auto;
+        margin-right: auto; /* Center the text content block */
+        text-align: center;
+        padding: 15px;
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 2rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .derisking-alternative-financing-section {
+        min-height: 300px;
+        padding: 50px 0;
+        background-position: 85% center; /* Even further adjust background position */
+    }
+    .derisking-alternative-financing-section .section-title {
+        font-size: 1.7rem;
+    }
+    .derisking-alternative-financing-section p {
+        font-size: 0.9rem;
+    }
+    .derisking-text-content {
+        max-width: 90%;
+    }
+}
+/* Add hover effects using a style block for better organization */
+                    .client-logo-item:hover img {
+                        transform: scale(1.1);
+                        /* Zooms the image to 110% of its size */
+                    }
+
+                    /* Optional: Add a subtle lift effect to the div on hover */
+                    .client-logo-item:hover {
+                        transform: translateY(-5px);
+                        /* Moves the div up slightly */
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                        /* Adds a shadow */
+                    }

@@ -1,0 +1,181 @@
+/* --- FOOTER SECTION --- */
+.site-footer {
+    background-color: var(--body-bg); /* Use the body background color, likely dark */
+    color: var(--text-muted-light); /* Muted light text for general footer text */
+    padding-top: 60px;
+    padding-bottom: 30px;
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+    z-index: 5; /* Ensure footer is above other elements if necessary */
+}
+
+.floating-footer-inner {
+    background-color: var(--dark-grey-box-bg); /* A slightly lighter dark background for the floating part */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 50px 0 20px 0;
+    box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.3); /* Shadow to give it a "floating" effect */
+    position: relative;
+    overflow: hidden;
+}
+
+.floating-footer-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.1), transparent); /* Subtle gradient overlay */
+    z-index: 1;
+}
+
+.floating-footer-inner .container-fluid {
+    position: relative;
+    z-index: 2; /* Ensure content is above the pseudo-element */
+}
+
+.footer-top-section {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    margin-bottom: 40px;
+}
+
+.footer-logo svg {
+    max-width: 180px;
+    height: auto;
+    fill: var(--white); /* Ensure logo is visible on dark background */
+    margin-bottom: 20px;
+}
+
+.footer-tagline {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 350px;
+    margin-bottom: 20px;
+    color: var(--light-text);
+}
+
+.social-icon {
+    font-size: 1.5rem;
+    color: var(--white);
+    margin-right: 15px;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: var(--accent-pink); /* Pink accent on hover */
+}
+
+.footer-links li {
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+.footer-links li a {
+    color: var(--text-muted-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links li a:hover {
+    color: var(--white); /* Brighter on hover */
+}
+
+.footer-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle white divider */
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-copyright {
+    font-size: 0.85rem;
+    color: var(--text-muted-light);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.footer-legal-links {
+    text-align: center;
+}
+
+.footer-legal-links .list-inline-item {
+    font-size: 0.85rem;
+    margin-right: 15px;
+}
+
+.footer-legal-links .list-inline-item:last-child {
+    margin-right: 0;
+}
+
+.footer-legal-links a {
+    color: var(--text-muted-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-legal-links a:hover {
+    color: var(--white);
+}
+
+.footer-disclaimer {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4); /* Very muted text for disclaimer */
+    text-align: center;
+    margin-top: 20px;
+    line-height: 1.4;
+}
+
+/* Responsive adjustments for Footer */
+@media (max-width: 767.98px) {
+    .floating-footer-inner {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 40px 0 15px 0;
+    }
+
+    .footer-top-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-logo svg {
+        margin-bottom: 15px;
+    }
+
+    .footer-tagline {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+
+    .social-icon {
+        margin: 0 10px 15px 10px;
+    }
+
+    .footer-links {
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-copyright,
+    .footer-legal-links,
+    .footer-disclaimer {
+        font-size: 0.75rem;
+    }
+
+    .footer-legal-links .list-inline-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+}

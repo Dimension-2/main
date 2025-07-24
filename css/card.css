@@ -1,0 +1,591 @@
+
+    /* --- Single Palette Variables --- */
+    :root {
+        --body-bg: #000000; /* Pure Black for the entire website background */
+        --dark-grey-box-bg: #1a1a1a; /* Dark grey for the "De-Risking Alternative Financing" box */
+        --white: #ffffff;
+        --dark-text: #343a40; /* Used for text on white/light backgrounds (like navbar) */
+        --light-text: #f8f9fa; /* Used for text on black/dark backgrounds */
+        --text-muted-dark: #6c757d; /* Muted grey for text on light backgrounds */
+        --text-muted-light: #b0b0b0; /* Muted light grey for text on dark backgrounds */
+        --accent-pink: #d9534f;
+        --button-hover-pink: #c9302c;
+        --navbar-bg: #f0f0f0; /* Navbar remains light grey */
+        --navbar-link-dark: #333333;
+        --navbar-link-hover: #007bff;
+        --border-light: #e9ecef; /* Light border for sections/elements on light backgrounds */
+        --border-dark: #333333; /* Darker border for elements on black or dark grey backgrounds */
+    }
+
+    body {
+        background-color: var(--body-bg); /* Set whole website background to black */
+        font-family: Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center main content blocks horizontally */
+        justify-content: flex-start; /* Align content to the top */
+        padding-top: 20px; /* Add some space from the top for the navbar */
+        box-sizing: border-box; /* Include padding in height/width */
+        color: var(--light-text); /* Default body text color to light for readability on black */
+    }
+
+    /* --- Custom styles for the navbar --- */
+    .custom-navbar {
+        background-color: var(--navbar-bg) !important; /* Light grey background */
+        border-radius: 12px; /* Rounded corners */
+        margin-bottom: 20px !important; /* Space below navbar */
+        padding: 1rem 1.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: relative;
+        width: calc(100% - 24px); /* Full width minus margins */
+        max-width: 1200px; /* Navbar Max Width set to 1200px for a "full" but contained look */
+        z-index: 1000;
+    }
+
+    .custom-navbar .navbar-brand img {
+        /* Specific styling for your logo */
+    }
+
+    .custom-navbar .nav-link {
+        color: var(--navbar-link-dark) !important; /* Darker text for links */
+        font-weight: 500;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .custom-navbar .nav-link:hover {
+        color: var(--navbar-link-hover) !important; /* Blue on hover */
+    }
+
+    .custom-navbar .nav-link.btn-primary {
+        background-color: var(--navbar-link-hover) !important; /* Bootstrap primary blue for the button */
+        border-color: var(--navbar-link-hover) !important;
+        color: white !important;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .custom-navbar .nav-link.btn-primary:hover {
+        background-color: #0056b3 !important; /* Darker blue on button hover */
+        border-color: #0056b3 !important;
+    }
+
+    .custom-navbar .dropdown-menu {
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-top: 5px;
+        background-color: var(--white); /* Ensure dropdown menu is white */
+    }
+
+    .custom-navbar .dropdown-item {
+        color: var(--navbar-link-dark);
+    }
+
+    .custom-navbar .dropdown-item:hover {
+        background-color: #e9ecef;
+        color: var(--navbar-link-dark);
+    }
+
+    @media (min-width: 992px) {
+        .custom-navbar .navbar-nav .nav-item:not(:last-child) {
+            margin-right: 0.5rem;
+        }
+    }
+
+    /* --- Hero Section (De-Risking Human Progress) - Directly on black background --- */
+    .hero-section-box-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .hero-section-content-box { /* This is just a content container now */
+        background-color: transparent; /* No background, content directly on body bg */
+        border-radius: 0;
+        box-shadow: none;
+        padding: 60px 40px;
+        max-width: 1200px; /* Still wide for hero content */
+        width: 100%;
+        text-align: center;
+        color: var(--light-text);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section-content-box h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        color: var(--white);
+    }
+
+    .hero-section-content-box h2.display-5 {
+        font-size: 3rem;
+        font-weight: 500;
+        margin-top: 5px;
+        margin-bottom: 25px;
+        color: var(--white);
+    }
+
+    .hero-section-content-box .hero-subtext {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        margin-bottom: 40px;
+        color: var(--text-muted-light);
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-section-content-box .btn-pink {
+        background-color: var(--accent-pink);
+        border-color: var(--accent-pink);
+        color: var(--white);
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
+    }
+
+    .hero-section-content-box .btn-pink:hover {
+        background-color: var(--button-hover-pink);
+        border-color: var(--button-hover-pink);
+        color: var(--white);
+    }
+
+    /* Optional: Large circle on right */
+    .hero-section-content-box::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -100px;
+        transform: translateY(-50%);
+        width: 400px;
+        height: 400px;
+        border: 2px solid rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    @media (min-width: 992px) {
+        .hero-section-content-box {
+            text-align: left;
+            padding-left: 80px;
+            padding-right: 80px;
+        }
+        .hero-section-content-box h1,
+        .hero-section-content-box h2,
+        .hero-section-content-box .hero-subtext,
+        .hero-section-content-box .btn-pink {
+            text-align: left;
+            margin-left: 0;
+            margin-right: auto;
+        }
+    }
+
+    /* --- Dark Grey Rounded Box: De-Risking Alternative Financing & Clients Trust Newfront --- */
+    .alternative-financing-section-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .alternative-financing-content-box {
+        background-color: var(--dark-grey-box-bg); /* Now a dark grey box */
+        border-radius: 15px; /* Rounded corners */
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow for depth on black background */
+        max-width: 900px; /* Still retains original max-width */
+        width: 100%;
+        text-align: center;
+        color: var(--light-text); /* Light text for readability on dark grey background */
+        margin-bottom: 40px; /* Added margin for separation */
+    }
+
+    .alternative-financing-content-box h1 {
+        color: var(--light-text); /* Light text */
+        margin-bottom: 15px;
+        font-weight: 600;
+        font-size: 2.5rem;
+    }
+
+    .alternative-financing-content-box p {
+        color: var(--text-muted-light); /* Muted light text */
+        line-height: 1.6;
+        margin-bottom: 25px;
+        font-size: 1.1rem;
+    }
+
+    /* Styling for the Clients Trust Newfront section */
+    .alternative-financing-content-box .clients-section-inner {
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid var(--border-dark); /* Dark border for separation */
+        text-align: left;
+    }
+
+    .alternative-financing-content-box .clients-section-inner h2 {
+        color: var(--light-text);
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 2rem;
+    }
+
+    .alternative-financing-content-box .clients-section-inner p {
+        color: var(--text-muted-light);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    /* --- Background Logo for "Clients Trust Newfront" (now sits on black) --- */
+    .clients-header-row {
+        position: relative;
+        z-index: 1;
+        padding-bottom: 30px;
+        min-height: 150px;
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .clients-header-row::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 300px;
+        background-image: url('path/to/your/newfront_bg_logo.png'); /* You might need a light version of your logo */
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.05; /* Adjusted opacity for visibility on dark backgrounds */
+        z-index: -1;
+    }
+
+    .section-title-clients,
+    .section-description-clients {
+        position: relative;
+        z-index: 2;
+        color: var(--light-text); /* Light text for contrast */
+    }
+    .section-title-clients {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .section-description-clients {
+        font-size: 1.1rem;
+        color: var(--text-muted-light); /* Muted light grey */
+    }
+
+    /* --- Client Logos Marquee - Fill the Box --- */
+    .client-logos-marquee-container {
+        width: 100%;
+        overflow: hidden;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 60px;
+    }
+
+    .client-logos-marquee {
+        display: flex;
+        white-space: nowrap;
+        animation: marquee 30s linear infinite;
+    }
+
+    .client-logo-item {
+        width: 180px;
+        height: 90px;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 15px;
+        border: 1px solid var(--border-dark); /* Dark border for contrast on black */
+        border-radius: 8px;
+        background-color: var(--body-bg); /* Match body background or dark grey */
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(255,255,255,0.05); /* Subtle light shadow */
+    }
+
+    .client-logo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        padding: 10px;
+        filter: grayscale(100%) brightness(200%); /* Adjust logo for dark background, increase brightness */
+    }
+
+    @keyframes marquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
+
+    /* --- Styles for the Industry Carousel with Navigation Buttons --- */
+    .approach-title-white {
+        color: var(--white); /* Assuming you want white text for this title on the black background */
+        margin-bottom: 2rem;
+        font-size: 2.8rem;
+        font-weight: 700;
+    }
+
+    .industry-carousel-wrapper {
+        position: relative; /* For positioning navigation buttons */
+        overflow: hidden; /* Hide the scrollbar */
+        padding: 20px 0; /* Add some padding if needed */
+        max-width: 1200px; /* Adjust as needed to contain the carousel */
+        margin: 0 auto; /* Center the wrapper */
+    }
+
+    .industry-carousel {
+        display: flex;
+        overflow-x: scroll; /* Keep scroll for JS to manipulate, but hide it visually */
+        scroll-behavior: smooth; /* Smooth scrolling when buttons are clicked */
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+        padding-bottom: 10px; /* Prevent content from being cut off if scrollbar was there */
+    }
+
+    /* Hide scrollbar for Chrome, Safari, Opera */
+    .industry-carousel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .industry-card {
+        flex: 0 0 auto; /* Prevent cards from shrinking */
+        width: 250px; /* Fixed width for each card */
+        margin: 0 15px; /* Spacing between cards */
+        background-color: #343a40; /* Darker background for cards */
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        color: var(--white);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .industry-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .industry-card img {
+        width: 100%;
+        height: 180px; /* Fixed height for images */
+        object-fit: cover;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .industry-title {
+        padding: 15px 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        pointer-events: none; /* Allow clicks to pass through to buttons */
+        padding: 0 20px; /* Padding from wrapper edges */
+        z-index: 10;
+    }
+
+    .carousel-btn {
+        background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+        border: none;
+        border-radius: 50%; /* Rounded shape */
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        color: var(--white);
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        pointer-events: auto; /* Re-enable clicks on buttons */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .carousel-btn:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+        transform: scale(1.05);
+    }
+
+    .carousel-btn:active {
+        transform: scale(0.95);
+    }
+
+    /* --- Responsive adjustments --- */
+    @media (max-width: 1200px) {
+        .hero-section-content-box {
+            padding: 50px 30px;
+        }
+        .hero-section-content-box h1 {
+            font-size: 3rem;
+        }
+        .hero-section-content-box h2.display-5 {
+            font-size: 2.5rem;
+        }
+        .alternative-financing-content-box {
+            padding: 30px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .custom-navbar {
+            max-width: 90%; /* Slightly reduce width on medium screens */
+        }
+        .hero-section-content-box::after {
+            width: 300px;
+            height: 300px;
+            right: -80px;
+        }
+        .clients-header-row::before {
+            width: 500px;
+            height: 250px;
+        }
+        /* Adjust button positioning for smaller screens */
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+        .carousel-nav {
+            padding: 0 10px;
+        }
+        .industry-card {
+            width: 220px; /* Slightly smaller cards */
+            margin: 0 10px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .custom-navbar {
+            max-width: calc(100% - 40px); /* Adjust navbar max-width for smaller screens */
+        }
+        .hero-section-content-box {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .hero-section-content-box h1,
+        .hero-section-content-box h2,
+        .hero-section-content-box .hero-subtext,
+        .hero-section-content-box .btn-pink {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-section-content-box h1 {
+            font-size: 2.5rem;
+        }
+        .hero-section-content-box h2.display-5 {
+            font-size: 2rem;
+        }
+        .hero-section-content-box .hero-subtext {
+            font-size: 1rem;
+        }
+        .hero-section-content-box::after {
+            display: none; /* Hide decorative circle on small screens */
+        }
+        .alternative-financing-content-box {
+            padding: 25px;
+        }
+        .alternative-financing-content-box h1 {
+            font-size: 2rem;
+        }
+        .alternative-financing-content-box p {
+            font-size: 1rem;
+        }
+        .alternative-financing-content-box .clients-section-inner {
+            text-align: center;
+        }
+        .client-logo-item {
+            width: 120px;
+            height: 60px;
+            margin: 0 10px;
+            border-color: var(--border-dark);
+        }
+        .clients-header-row::before {
+            width: 400px;
+            height: 200px;
+        }
+        .section-title-clients,
+        .section-description-clients {
+            color: var(--light-text);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .custom-navbar {
+            margin: 10px !important;
+            width: calc(100% - 20px);
+            max-width: none; /* Allow navbar to take full width on very small screens */
+        }
+        body {
+            padding-top: 10px;
+        }
+        .hero-section-content-box {
+            padding: 30px 15px;
+            margin-bottom: 20px;
+        }
+        .hero-section-content-box h1 {
+            font-size: 2rem;
+        }
+        .hero-section-content-box h2.display-5 {
+            font-size: 1.7rem;
+        }
+        .hero-section-content-box .btn-pink {
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+        .alternative-financing-content-box {
+            padding: 20px;
+        }
+        .alternative-financing-content-box h1 {
+            font-size: 1.8rem;
+        }
+        .client-logo-item {
+            width: 100px;
+            height: 50px;
+            margin: 0 8px;
+            border-color: var(--border-dark);
+        }
+        .clients-header-row::before {
+            width: 250px;
+            height: 120px;
+        }
+        .section-title-clients {
+            font-size: 2rem;
+        }
+        .section-description-clients {
+            font-size: 0.9rem;
+        }
+        .industry-card {
+            width: 200px; /* Even smaller cards */
+            margin: 0 8px;
+        }
+        .carousel-nav {
+            padding: 0 5px;
+        }
+        .approach-title-white {
+            font-size: 2rem;
+        }
+    }

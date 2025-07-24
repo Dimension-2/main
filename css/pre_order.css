@@ -1,0 +1,340 @@
+
+        /* General Body Styles */
+        body {
+            background-color: #f8f9fa; /* Very light gray background for the page */
+            font-family: 'Poppins', sans-serif; /* Primary font for the page */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensure it takes full viewport height */
+            color: #343a40; /* Default text color for the body */
+            line-height: 1.6;
+        }
+
+        /* Pre-order Container - The main white box */
+        .preorder-container {
+            background-color: #ffffff; /* Bright white */
+            border-radius: 20px; /* Smooth rounded corners */
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12); /* Elegant, pronounced shadow */
+            padding: 50px 60px; /* Generous padding inside the box */
+            max-width: 900px; /* Max width for the form container */
+            width: 95%; /* Responsive width */
+            position: relative;
+            box-sizing: border-box; /* Include padding in width calculation */
+            animation: fadeInScale 0.6s ease-out forwards; /* Simple entry animation */
+        }
+
+        /* Close Button */
+        .close-button {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: #888; /* Soft gray */
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #555; /* Darker gray on hover */
+        }
+
+        /* Header Section */
+        .preorder-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .preorder-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #1a436e; /* Deep blue for the heading */
+            margin-bottom: 15px;
+            line-height: 1.2;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle text shadow */
+        }
+
+        .preorder-header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #555; /* Slightly softer text for description */
+            max-width: 500px; /* Constrain width for readability */
+            margin: 0 auto;
+        }
+
+        /* Form Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns */
+            gap: 30px; /* Space between form groups */
+            margin-bottom: 40px;
+        }
+
+        /* Form Group Styles */
+        .form-group {
+            margin-bottom: 0; /* Bootstrap's margin-bottom will be handled by gap */
+        }
+
+        .form-group label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500; /* Medium weight for labels */
+            color: #495057; /* Darker gray for labels */
+            margin-bottom: 8px; /* Space between label and input */
+            display: block; /* Ensure label takes full width */
+        }
+
+        /* Form Control (Input, Select, Textarea) Styles */
+        .form-control,
+        .form-select,
+        textarea.form-control {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            padding: 14px 20px; /* Increased padding for a taller feel */
+            border: 1px solid #e0e0e0; /* Light gray border */
+            border-radius: 12px; /* Slightly more rounded input fields */
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04); /* Slightly deeper subtle inner shadow */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            color: #343a40; /* Dark text in inputs */
+            background-color: #fdfdfd; /* Very subtle off-white background for inputs */
+            width: 100%; /* Make input fields full width of their grid column */
+            box-sizing: border-box; /* Ensure padding doesn't push width over 100% */
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea.form-control:focus {
+            border-color: #007bff; /* Primary blue on focus */
+            box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25), inset 0 1px 4px rgba(0, 0, 0, 0.04); /* Maintain inner shadow, add outer glow */
+            outline: none;
+        }
+
+        /* Fieldset and Legend for Radio Buttons */
+        fieldset {
+            border: none; /* Remove default fieldset border */
+            padding: 0;
+            margin: 0 0 30px 0; /* Space below fieldset */
+        }
+
+        legend {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529; /* Darker color for legend */
+            margin-bottom: 20px;
+            padding: 0;
+            width: 100%; /* Ensure legend spans full width */
+        }
+
+        /* Radio Options Grid */
+        .radio-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid for radios */
+            gap: 15px; /* Space between radio options */
+        }
+
+        .form-check {
+            margin-bottom: 0;
+            padding-left: 0; /* Remove default padding for custom alignment */
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            appearance: none; /* Hide default radio button */
+            -webkit-appearance: none;
+            width: 22px; /* Slightly larger radio button */
+            height: 22px; /* Slightly larger radio button */
+            border: 2px solid #ced4da; /* Custom border */
+            border-radius: 50%; /* Make it round */
+            background-color: #f8f9fa; /* Light background */
+            margin-right: 10px; /* Space between custom radio and label */
+            flex-shrink: 0; /* Prevent shrinking */
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            top: -1px; /* Adjust vertical alignment */
+        }
+
+        .form-check-input:checked {
+            border-color: #007bff; /* Primary blue when checked */
+            background-color: #007bff; /* Primary blue background when checked */
+        }
+
+        .form-check-input:checked::after {
+            content: '';
+            display: block;
+            width: 12px; /* Larger dot inside when checked */
+            height: 12px; /* Larger dot inside when checked */
+            background-color: #ffffff; /* White dot inside when checked */
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .form-check-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #343a40; /* Dark color for radio labels */
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        /* Additional Details Textarea */
+        textarea.form-control {
+            min-height: 140px; /* Taller textarea */
+            resize: vertical; /* Allow vertical resizing only */
+            margin-bottom: 40px;
+        }
+
+        /* Submit Button */
+        .submit-button-container {
+            text-align: center;
+            margin-top: 20px; /* Space above button */
+        }
+
+        .submit-button {
+            background-color: #007bff; /* Vibrant primary blue */
+            color: #ffffff; /* White text */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3); /* Button shadow */
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 12px 25px rgba(0, 123, 255, 0.4); /* More pronounced shadow on hover */
+        }
+
+        /* Form Footer */
+        .form-footer {
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #777; /* Lighter gray for footer text */
+            margin-top: 40px;
+            line-height: 1.6;
+        }
+
+        .form-footer a {
+            color: #007bff; /* Link color */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            color: #0056b3; /* Darker link color on hover */
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive CSS */
+        @media (max-width: 992px) {
+            .preorder-container {
+                padding: 40px; /* Reduce padding on medium screens */
+            }
+
+            .preorder-header h2 {
+                font-size: 2.2rem; /* Smaller heading on medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preorder-container {
+                border-radius: 15px; /* Slightly less rounded on small screens */
+                padding: 30px 25px; /* More reduced padding on small screens */
+                width: 90%; /* Occupy more width on small screens */
+            }
+
+            .close-button {
+                font-size: 2rem;
+                top: 15px;
+                right: 15px;
+            }
+
+            .preorder-header h2 {
+                font-size: 1.8rem; /* Even smaller heading on small screens */
+                margin-bottom: 10px;
+            }
+
+            .preorder-header p {
+                font-size: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+                gap: 20px; /* Reduce gap */
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-control,
+            .form-select,
+            textarea.form-control {
+                font-size: 0.95rem;
+                padding: 10px 15px;
+            }
+
+            legend {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+
+            .radio-options-grid {
+                grid-template-columns: 1fr; /* Stack radio options on very small screens */
+                gap: 10px;
+            }
+
+            .form-check-input {
+                width: 18px;
+                height: 18px;
+            }
+
+            .form-check-input:checked::after {
+                width: 8px;
+                height: 8px;
+            }
+
+            .form-check-label {
+                font-size: 0.95rem;
+            }
+
+            .submit-button {
+                font-size: 1.1rem;
+                padding: 12px 30px;
+            }
+
+            .form-footer {
+                font-size: 0.8rem;
+                margin-top: 30px;
+            }
+        }
