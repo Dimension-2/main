@@ -1,0 +1,63 @@
+
+.approach-description {
+    color: #333;
+    font-size: 3em;
+    font-weight: bold;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    /* You can add more styles as needed */
+}
+
+/* Client Logos Section */
+.client-logos-section {
+    width: 100%;
+    background-color: white;
+    padding: 40px 0;
+}
+
+.client-logos-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.client-logos-marquee {
+    display: flex;
+    white-space: nowrap;
+    animation: scroll 20s linear infinite;
+}
+
+.client-logo-item {
+    width: 16.66%;
+    height: 100px;
+    flex-shrink: 0;
+    margin: 0 0.5%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+}
+
+.client-logo-item img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    object-position: center;
+}
+
+/* Animation */
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Hover Effect */
+.client-logo-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+

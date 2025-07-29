@@ -1,3 +1,76 @@
+<?php
+// This should be the VERY FIRST THING in your file
+require_once 'config.php'; // Include the database connection
+
+// Verify connection exists
+if (!isset($conn) || $conn->connect_error) {
+    die("Database connection failed");
+}
+
+// Function to safely fetch content
+function getContent($conn, $section, $type, $limit = 1)
+{
+
+    $stmt = $conn->prepare("SELECT * FROM Main_file_Content WHERE section=? AND content_type=? LIMIT ?");
+    $stmt->bind_param("ssi", $section, $type, $limit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($limit == 1) {
+        return $result->fetch_assoc() ?? []; // Return empty array if null
+    } else {
+        return $result->fetch_all(MYSQLI_ASSOC) ?? []; // Return empty array if null
+    }
+
+}
+
+
+// Fetch all content at once
+try {
+    // Navbar and Hero
+    $navbarLogo = getContent($conn, 'navbar', 'image');
+    $heroImage = getContent($conn, 'hero', 'image');
+    $heroHeading = getContent($conn, 'hero_heading', 'text');
+    $heroSubheading = getContent($conn, 'hero_subheading', 'text');
+    $heroText = getContent($conn, 'hero_text', 'text');
+
+    // Main sections
+    // Try both possible section names
+    $deRiskingText = getContent($conn, 'de_risking', 'text')
+        ?: getContent($conn, 'derisking_title', 'text');
+    // Try multiple possible section names
+    $approachText = getContent($conn, 'approach_text', 'text')
+        ?: getContent($conn, 'approach_title', 'text');
+    $numbersText = getContent($conn, 'numbers_title', 'text');
+    $talentText = getContent($conn, 'talent_title', 'text');
+    $scaleText = getContent($conn, 'scale_title', 'text')
+        ?: getContent($conn, 'scale_desc', 'text');
+
+    $aiText = getContent($conn, 'ai_text', 'text');
+
+    // Client logos
+    $clientLogos = getContent($conn, 'client_logos', 'image', 0); // 0 means no limit
+
+    // Videos
+    $chartingVideo = getContent($conn, 'charting', 'video');
+    $approachVideo = getContent($conn, 'approach', 'video');
+
+    // People images
+    $person1 = getContent($conn, 'person1', 'image');
+    $person2 = getContent($conn, 'person2', 'image');
+    $person3 = getContent($conn, 'person3', 'image');
+
+    // Industries
+    $industryImages = getContent($conn, 'industries', 'image', 0);
+
+    // Latest articles
+    $latestArticles = getContent($conn, 'latest_articles', 'image', 0);
+
+} catch (Exception $e) {
+    error_log("Database error: " . $e->getMessage());
+    // You might want to display a user-friendly message or use default content
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,9 +83,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/work.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/aproach.css">
     <link rel="stylesheet" href="css/card.css">
@@ -21,71 +98,71 @@
     <link rel="stylesheet" href="css/logos.css">
     <link rel="stylesheet" href="css/alter.css">
     <link rel="stylesheet" href="css/indee.css">
+    <!-- Your head content remains exactly the same -->
+    <!-- ... -->
 </head>
-<style>
-        /* Styles for the Pre-Order link within this header section */
-        .custom-navbar-wrapper .nav-item .nav-link[href="pre_order.php"] {
-            color: #007bff;
-            font-weight: 600;
-        }
-    </style>
-    
+
 <body>
     <header class="custom-navbar-wrapper py-3">
-    
-    <nav class="navbar navbar-expand-lg navbar-light custom-navbar my-3 mx-3">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="faqs.php">FAQ</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="" id="navbarDropdownSolutions" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Our Solutions
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownSolutions">
-                            <li><a class="dropdown-item" href="matchmaking.php">Matchmaking (Live Now)</a></li>
-                            <li><a class="dropdown-item" href="upcoming_solutions.php">Upcoming Solutions
+        <nav class="navbar navbar-expand-lg navbar-light custom-navbar my-3 mx-3">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="faqs.php">FAQ</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="" id="navbarDropdownSolutions" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Our Solutions
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownSolutions">
+                                <li><a class="dropdown-item" href="matchmaking.php">Matchmaking (Live Now)</a></li>
+                                <li><a class="dropdown-item" href="upcoming_solutions.php">Upcoming Solutions
                                         (Launching Soon)</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact_us.php">Contact Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pre_order.php">Pre-Order</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white ms-lg-2" href="#">BOOK DEMO</a>
-                    </li>
-                </ul>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact_us.php">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="pre_order.php">Pre-Order</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary text-white ms-lg-2" href="#">BOOK DEMO</a>
+                        </li>
+                    </ul>
+                </div>
+                <a class="navbar-brand" href="index.php">
+                    <?php if ($navbarLogo): ?>
+                        <img src="<?php echo htmlspecialchars($navbarLogo['file_path']); ?>"
+                            alt="<?php echo htmlspecialchars($navbarLogo['alt_text']); ?>" height="30">
+                    <?php else: ?>
+                        <img src="image/default-logo.png" alt="Default Logo" height="30">
+                    <?php endif; ?>
+                </a>
             </div>
-            <a class="navbar-brand" href="index.php">
-                <img src="image/forti fund.PNG" alt="FortiFund Logo" height="30">
-            </a>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
+
 
     <section class="hero-section">
         <div class="hero-content">
             <div class="hero-text">
-                <h1>De-Risking</h1>
-                <h2 class="display-5">Human Progress</h2>
-                <p class="hero-subtext">With elite insurance expertise empowered by breakthrough technology. Redefined
-                    for the modern finance landscape of the 21st century.</p>
+                <h1><?php echo $heroHeading['content_text']; ?></h1>
+                <h2 class="display-5"><?php echo $heroSubheading['content_text']; ?></h2>
+                <p class="hero-subtext"><?php echo $heroText['content_text']; ?></p>
                 <button class="btn btn-primary btn-pink">Talk to an Expert <i
                         class="fas fa-arrow-right ms-2"></i></button>
             </div>
             <div class="hero-image-container">
                 <div class="hero-image-inner">
-                    <img src="image/upimg.webp" alt="Two professionals" class="img-fluid">
+                    <img src="<?php echo $heroImage['file_path']; ?>" alt="<?php echo $heroImage['alt_text']; ?>"
+                        class="img-fluid">
                 </div>
             </div>
         </div>
@@ -95,137 +172,96 @@
             <div class="animated-divider"></div>
             <div class="derisking-text-content">
                 <div>
-                    <h2 class="section-title">De-Risking Alternative Financing</h2>
+                    <!-- De-Risking Section -->
+                    <h2 class="section-title">
+                        <?php echo isset($deRiskingText['content_text']) ? $deRiskingText['content_text'] : 'Default text if empty'; ?>
+                    </h2>
+
+                    <!-- <h2 class="section-title">De-Risking Alternative Financing</h2> -->
                 </div>
                 <div>
-                    <p>The alternative finance space is fast-moving, fragmented, and full of risk — but it doesn’t have to be. FortiFund was built by experts who know the game inside and out. We help brokerages reduce risk at every step</p>
+                    <p>The alternative finance space is fast-moving, fragmented, and full of risk — but it doesn’t have
+                        to be. FortiFund was built by experts who know the game inside and out. We help brokerages
+                        reduce risk at every step</p>
                 </div>
             </div>
             <div class="animated-divider"></div>
         </div>
     </section>
     <div class="main-content-wrapper" style="width: 95%;">
-            
+        <?php
+        $clientLogos = $conn->query("SELECT * FROM Main_file_Content WHERE section='client_logos' AND content_type='image'");
+        ?>
         <section class="clients-trust-section py-5">
             <div class="animated-divider"></div>
             <div class="container text-center clients-trust-container">
                 <div class="row align-items-center mb-5 clients-header-row">
                     <div class="col-lg-6 offset-lg-1 text-lg-start mb-4 mb-lg-0">
-                        <h2 class="section-title-clients"
+                        <p class="approach-description">
+                            <?php echo !empty($approachText['content_text']) ? htmlspecialchars($approachText['content_text']) : 'Default content text'; ?>
+                        </p>
+                        <!-- <h2 class="section-title-clients"
                             style="color: #333; font-size: 3em; font-weight: bold; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-                            Our approach</h2>
+                            Our approach</h2> -->
                     </div>
                     <div class="col-lg-4 text-lg-start">
                         <p class="section-description-clients">Our experts consult with companies across all growth
                             stages that align with their benefits philosophy.</p>
                     </div>
                 </div>
-                <div class="client-logos-marquee-container"
-                    style="width: 100%; overflow: hidden; padding: 20px 0; background-color: white;">
-                    <div class="client-logos-marquee" style="display: flex; white-space: nowrap;">
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/dbl.jpg" alt="DBL Partners" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
+                <div class="client-logos-section" style="width: 100%; background-color: white; padding: 40px 0;">
+                    <div class="client-logos-marquee-container">
+                        <div style="width: 100%; overflow: hidden; padding: 20px 0;">
+                            <div class="client-logos-marquee"
+                                style="display: flex; white-space: nowrap; animation: scroll 20s linear infinite;">
+                                <?php while ($logo = $clientLogos->fetch_assoc()): ?>
+                                    <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
+                       border: 1px solid #ccc;
+                       border-radius: 10px;
+                       background-color: white;
                        transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/conversica.jpg" alt="Conversica" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
+                                        <img src="<?php echo $logo['file_path']; ?>" alt="<?php echo $logo['alt_text']; ?>"
+                                            style="max-width: 80%; max-height: 80%; object-fit: contain;">
+                                    </div>
+                                <?php endwhile; ?>
+
+                                <!-- Duplicate the logos for seamless looping -->
+                                <?php
+                                $clientLogos->data_seek(0); // Reset pointer to beginning
+                                while ($logo = $clientLogos->fetch_assoc()): ?>
+                                    <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
+                       border: 1px solid #ccc;
+                       border-radius: 10px;
+                       background-color: white;
                        transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/beiGene.png" alt="BeiGene" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/NFX.jpg" alt="NFX" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/Y combinatorss.JPG" alt="Y Combinators" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/floodgate.JPG" alt="Floodgate" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/lime.JPG" alt="Lime" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/foundation.JPG" alt="Foundation" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/em.JPG" alt="EM" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/logo 1.jpg" alt="Logo 1" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/thistle.JPG" alt="Thistle" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
-                        </div>
-                        <div class="client-logo-item" style="width: 16.66%; height: 100px; flex-shrink: 0; margin: 0 0.5%; overflow: hidden; display: flex; justify-content: center; align-items: center;
-                   border: 1px solid #ccc; /* Narrow border: 1px solid light gray */
-                   border-radius: 10px; /* Rounded edges: 10px radius */
-                   background-color: white;
-                   transition: transform 0.3s ease-in-out;">
-                            <img src="image/Astranis.jpg" alt="Astranis" style="width: 100%; height: 100%; object-fit: contain; object-position: center; display: block;
-                       transition: transform 0.3s ease-in-out;">
+                                        <img src="<?php echo $logo['file_path']; ?>" alt="<?php echo $logo['alt_text']; ?>"
+                                            style="max-width: 80%; max-height: 80%; object-fit: contain;">
+                                    </div>
+                                <?php endwhile; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-            </div>
+
+                <style>
+                    @keyframes scroll {
+                        0% {
+                            transform: translateX(0);
+                        }
+
+                        100% {
+                            transform: translateX(-50%);
+                        }
+                    }
+
+                    .client-logo-item:hover {
+                        transform: scale(2.05);
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                    }
+                </style>
         </section>
         <section class="our-approach-new-section py-5" style="background-color: white;">
-<div class="animated-divider"></div>
+            <div class="animated-divider"></div>
             <div class="container" style="background-color: white; padding: 20px; font-family: Arial, sans-serif;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start;
             background-color: #ffffff; /* White background */
@@ -355,6 +391,10 @@
                 </div>
             </div>
         </section>
+        <?php
+        $chartingVideo = $conn->query("SELECT * FROM Main_file_Content WHERE section='charting' AND content_type='video' LIMIT 1")->fetch_assoc();
+        $approachVideo = $conn->query("SELECT * FROM Main_file_Content WHERE section='approach' AND content_type='video' LIMIT 1")->fetch_assoc();
+        ?>
         <section class="charting-section py-5">
             <div class="animated-divider"></div>
             <div class="container charting-container">
@@ -385,26 +425,49 @@
                                     class="fas fa-arrow-right ms-2"></i></a>
                         </div>
                     </div>
+
                     <div class="col-lg-6">
-    <div class="video-palette-container" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */ overflow: hidden;">
-        <video src="video/inn.mp4" autoplay loop muted playsinline
-               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video>
-    </div>
-</div>
+                        <div class="video-palette-container"
+                            style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */ overflow: hidden;">
+                            <video
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                                src="<?php echo $chartingVideo['file_path']; ?>" autoplay loop muted
+                                playsinline></video>
+                            <!-- <video src="video/inn.mp4" autoplay loop muted playsinline
+                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"></video> -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-
+        <div class="animated-divider"></div>
         <section class="by-the-numbers-section py-5">
             <div class="container">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6">
-                        <h2 class="section-title text-start">By the Numbers</h2>
+                        <h1 class="section-title" style="
+                            font-family: 'Playfair Display', serif;
+                            font-size: 3rem;
+                            font-weight: 700;
+                            color: #333;
+                            text-align: center;
+                            letter-spacing: -0.5px;
+                            line-height: 1.2;
+                            margin: 70px 0 35px 295px;
+                            padding: 0;
+                            text-transform: none;
+                            width: 100%;
+                            ">
+                            <?php echo $numbersText['content_text'] ?? 'Default Title'; ?>
+                        </h1>
+
+                        <!-- <h2 class="section-title text-start">By the Numbers</h2> -->
                     </div>
                     <div class="col-lg-6 text-lg-start">
-                        <p class="section-description">The data speaks for itself. From our large roster of established
+
+                        <!-- <p class="section-description">The data speaks for itself. From our large roster of established
                             and growing clients to our stellar client retention rate—we build relationships that last.
-                        </p>
+                        </p> -->
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -458,17 +521,20 @@
             <div class="container talent-tech-container">
                 <div class="row align-items-center">
                     <div class="col-lg-6 mb-4 mb-lg-0">
-                        <img src="image/talent meet tech.jpg" alt="Talent Meets Tech" class="img-fluid talent-tech-image">
+                        <img src="image/talent meet tech.jpg" alt="Talent Meets Tech"
+                            class="img-fluid talent-tech-image">
                     </div>
                     <div class="col-lg-6">
                         <p class="section-label">EMPOWERED EXPERTISE</p>
-                        <h2 class="talent-tech-title">Talent Meets Tech</h2>
+                        <h2 class="talent-tech-title"><?php echo $talentText['content_text']; ?></h2>
+
+                        <!-- <h2 class="talent-tech-title">Talent Meets Tech</h2>
                         <p class="talent-tech-description">
                             Technology should enhance human expertise not replace<br>
                             it. By equipping our elite insurance talent with tech, we’re<br>
                             creating a competitive edge for our people and clients. For<br>
                             example:
-                        </p>
+                        </p> -->
                         <ul class="talent-tech-bullets list-unstyled">
                             <li><i class="fas fa-asterisk bullet-pink"></i> Paperless onboarding: our digital interface
                                 captures structured client data, providing more accurate submissions and saving time
@@ -498,13 +564,15 @@
                 <div class="row justify-content-center text-center">
                     <div class="col-lg-10">
                         <p class="section-label">GALVANIZED FOR GROWTH</p>
-                        <h2 class="built-to-scale-title">Built to Scale</h2>
+                        <h2 class="built-to-scale-title"><?php echo $scaleText['content_text']; ?></h2>
+
+                        <!-- <h2 class="built-to-scale-title">Built to Scale</h2>
                         <p class="built-to-scale-description">
                             Our highly-tenured team of experts support clients through<br>
                             their growth and business evolution at a variety of<br>
                             milestones with solutions that fit their needs—from early<br>
                             stage to mature enterprise.
-                        </p>
+                        </p> -->
                     </div>
                 </div>
                 <div class="row align-items-center justify-content-center mt-5">
@@ -523,7 +591,22 @@
                         </ul>
                     </div>
                     <div class="col-lg-6 order-lg-2 order-1 d-flex flex-column align-items-center mb-4 mb-lg-0">
+                        <?php
+                        $person1 = $conn->query("SELECT * FROM Main_file_Content WHERE section='person1' AND content_type='image' LIMIT 1")->fetch_assoc();
+                        $person2 = $conn->query("SELECT * FROM Main_file_Content WHERE section='person2' AND content_type='image' LIMIT 1")->fetch_assoc();
+                        $person3 = $conn->query("SELECT * FROM Main_file_Content WHERE section='person3' AND content_type='image' LIMIT 1")->fetch_assoc();
+                        ?>
                         <div class="built-to-scale-image-row mb-4">
+                            <img src="<?php echo $person1['file_path']; ?>" alt="<?php echo $person1['alt_text']; ?>"
+                                class="img-fluid built-to-scale-image img-small">
+                        </div>
+                        <div class="built-to-scale-image-row">
+                            <img src="<?php echo $person3['file_path']; ?>" alt="<?php echo $person3['alt_text']; ?>"
+                                class="img-fluid built-to-scale-image img-large me-3">
+                            <img src="<?php echo $person2['file_path']; ?>" alt="<?php echo $person2['alt_text']; ?>"
+                                class="img-fluid built-to-scale-image img-large">
+                        </div>
+                        <!-- <div class="built-to-scale-image-row mb-4">
                             <img src="image/person 1.webp" alt="Smiling Woman"
                                 class="img-fluid built-to-scale-image img-small">
                         </div>
@@ -533,22 +616,25 @@
                             <img src="image/person 2.webp" alt="Man looking up"
                                 class="img-fluid built-to-scale-image img-large">
                         </div>
+                    </div> -->
                     </div>
                 </div>
-            </div>
         </section>
     </div>
     <section class="our-approach-section">
         <video autoplay muted loop class="background-video">
+            <source src="<?php echo $approachVideo['file_path']; ?>" type="video/mp4">
+        </video>
+        <!-- <video autoplay muted loop class="background-video">
             <source src="video/insurance.mp4" type="video/mp4">
             Your browser does not support the video tag.
-        </video>
+        </video> -->
         <div class="video-overlay"></div>
         <div class="container our-approach-content">
             <div class="row justify-content-center text-center py-5">
                 <div class="col-lg-8">
                     <h2 class="approach-title-white">Get to Know<br>Newfront</h2>
-                    
+
                 </div>
             </div>
             <div class="animated-divider white-divider my-5"></div>
@@ -603,9 +689,12 @@
             <div class="row justify-content-center text-center py-5">
                 <div class="col-lg-10">
                     <h2 class="approach-title-white">Explore Our Industries<br>and Services</h2>
+                    <?php
+                    $industryImages = $conn->query("SELECT * FROM Main_file_Content WHERE section='industries' AND content_type='image'");
+                    ?>
                     <div class="industry-carousel-wrapper">
                         <div class="industry-carousel">
-                            <div class="industry-card">
+                            <!-- <div class="industry-card">
                                 <img src="image/agriculture.jfif" alt="Agriculture" class="img-fluid">
                                 <div class="industry-title">Agriculture</div>
                             </div>
@@ -638,7 +727,8 @@
                                 <div class="industry-title">Non-Profit</div>
                             </div>
                             <div class="industry-card">
-                                <img src="image/professional services.webp" alt="Professional Services" class="img-fluid">
+                                <img src="image/professional services.webp" alt="Professional Services"
+                                    class="img-fluid">
                                 <div class="industry-title">Professional Services</div>
                             </div>
                             <div class="industry-card">
@@ -652,7 +742,14 @@
                             <div class="industry-card">
                                 <img src="image/wholesale.jfif" alt="Cannabis" class="img-fluid">
                                 <div class="industry-title">Cannabis</div>
-                            </div>
+                            </div> -->
+                            <?php while ($industry = $industryImages->fetch_assoc()): ?>
+                                <div class="industry-card">
+                                    <img src="<?php echo $industry['file_path']; ?>"
+                                        alt="<?php echo $industry['alt_text']; ?>" class="img-fluid">
+                                    <div class="industry-title"><?php echo $industry['description']; ?></div>
+                                </div>
+                            <?php endwhile; ?>
                         </div>
                         <div class="carousel-nav">
                             <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
@@ -670,17 +767,7 @@
                 <div class="col-lg-10">
                     <h2 class="latest-from-newfront-title">Latest from<br>Newfront</h2>
                     <div class="row mt-4">
-                        <div class="col-md-4 mb-4">
-                            <div class="latest-card">
-                                <img src="image/acc.jpg" alt="Young Accounts" class="img-fluid latest-card-img">
-                                <div class="latest-card-content">
-                                    <p class="latest-card-category">COMPANY</p>
-                                    <h5 class="latest-card-title">Young Accounts as an Employee Benefits Broker</h5>
-                                    <p class="latest-card-description">The process of hiring a broker for your company's
-                                        employee benefits plan can feel a bit like dating...</p>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Article 1 -->
                         <div class="col-md-4 mb-4">
                             <div class="latest-card">
                                 <img src="image/obr.png" alt="Insights" class="img-fluid latest-card-img">
@@ -692,6 +779,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Article 2 -->
                         <div class="col-md-4 mb-4">
                             <div class="latest-card">
                                 <img src="image/sen.webp" alt="Leadership" class="img-fluid latest-card-img">
@@ -704,9 +793,46 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Article 3 -->
+                        <div class="col-md-4 mb-4">
+                            <div class="latest-card">
+                                <img src="image/acc.jpg" alt="Benefits" class="img-fluid latest-card-img">
+                                <div class="latest-card-content">
+                                    <p class="latest-card-category">BENEFITS</p>
+                                    <h5 class="latest-card-title">Young Accounts as an Employee Benefits Broker</h5>
+                                    <p class="latest-card-description">The process of hiring a broker for your company's
+                                        employee benefits can be daunting for young companies...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!-- <div class="col-md-4 mb-4">
+                        <div class="latest-card">
+                            <img src="image/obr.png" alt="Insights" class="img-fluid latest-card-img">
+                            <div class="latest-card-content">
+                                <p class="latest-card-category">INSIGHTS</p>
+                                <h5 class="latest-card-title">Navigating Your One Big Renewal (OBR)</h5>
+                                <p class="latest-card-description">One Big Renewal (OBR) is an annual process where
+                                    an employer must renew or update their employee benefits plans...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="latest-card">
+                            <img src="image/sen.webp" alt="Leadership" class="img-fluid latest-card-img">
+                            <div class="latest-card-content">
+                                <p class="latest-card-category">LEADERSHIP</p>
+                                <h5 class="latest-card-title">Sequoia & Evergreen Business: Why People Culture and
+                                    Plan Sponsors Benefit From...</h5>
+                                <p class="latest-card-description">While traditional insurance brokers primarily
+                                    focus on simply placing insurance, Evergreen Insurance Services...</p>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
             </div>
+        </div>
         </div>
     </section>
     <footer class="site-footer py-3">
@@ -781,11 +907,23 @@
     <button id="scrollToTopBtn" class="scroll-to-top-btn">
         <i class="fas fa-chevron-up"></i>
     </button>
-    
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <!-- Rest of your HTML/PHP content -->
+    <!-- ... -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="script.js"></script>
+
+</body>
+
+</html>
+
+
+
+<?php
+// Close connection at the end
+$conn->close();
+?>
 
 </html>

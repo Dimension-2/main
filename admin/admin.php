@@ -3,7 +3,7 @@
 session_start();
 
 // Check if the user is logged in, otherwise redirect to login page
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php"); // Correct: login.php is in the same directory (admin/)
     exit;
 }
@@ -14,7 +14,8 @@ require_once '../config.php'; // Adjust path based on your project structure
 // --- PHP Functions for Content Management ---
 
 // Function to fetch all unique main headings
-function getAllMainHeadings($conn) {
+function getAllMainHeadings($conn)
+{
     $headings = [];
     $sql = "SELECT DISTINCT main_heading FROM website_content WHERE main_heading IS NOT NULL AND main_heading != '' ORDER BY main_heading ASC";
     if ($result = mysqli_query($conn, $sql)) {
@@ -27,7 +28,8 @@ function getAllMainHeadings($conn) {
 }
 
 // Function to fetch content keys, optionally filtered by main heading
-function getContentKeysByMainHeading($conn, $mainHeading = null) {
+function getContentKeysByMainHeading($conn, $mainHeading = null)
+{
     $keys = [];
     $sql = "SELECT content_key FROM website_content";
     $params = [];
@@ -79,6 +81,28 @@ $message = ''; // To display success or error messages (from POST operations lik
 // Initialize content keys based on selection or empty
 $allContentKeys = [];
 
+// Handle AJAX request for content keys
+if (isset($_GET['main_heading'])) {
+    $selected_main_heading = $_GET['main_heading'];
+    $filteredKeys = getContentKeysByMainHeading($conn, $selected_main_heading);
+    echo json_encode($filteredKeys);
+    exit;
+}
+
+// Handle AJAX request for content text
+if (isset($_GET['key'])) {
+    $selected_key = $_GET['key'];
+    $sql = "SELECT content_text FROM website_content WHERE content_key = ?";
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $selected_key);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $current_content);
+        mysqli_stmt_fetch($stmt);
+        echo $current_content;
+        mysqli_stmt_close($stmt);
+    }
+    exit;
+}
 
 // --- Handle AJAX Requests ---
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -327,6 +351,7 @@ mysqli_close($conn);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -334,12 +359,61 @@ mysqli_close($conn);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin-styles.css">
     <link rel="stylesheet" href="../css/admin-css.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Show/hide content key dropdown based on main heading selection
+        $('#mainHeadingSelect').change(function () {
+            if ($(this).val()) {
+                $('#contentKeySelectGroup').show();
+
+                // AJAX call to load content keys
+                $.ajax({
+                    url: 'admin.php',
+                    type: 'GET',
+                    data: { main_heading: $(this).val() },
+                    success: function (response) {
+                        var keys = JSON.parse(response);
+                        $('#contentKeySelect').empty().append('<option value="">-- Select a Key --</option>');
+                        keys.forEach(function (key) {
+                            $('#contentKeySelect').append('<option value="' + key + '">' + key + '</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#contentKeySelectGroup').hide();
+            }
+        });
+
+        // Load current content when a key is selected
+        $('#contentKeySelect').change(function () {
+            if ($(this).val()) {
+                $.ajax({
+                    url: 'admin.php',
+                    type: 'GET',
+                    data: { key: $(this).val() },
+                    success: function (response) {
+                        $('#currentContentDisplay').text(response);
+                        $('#newContentText').val(response);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Admin Panel</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="admin.php">Admin Panel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -348,16 +422,16 @@ mysqli_close($conn);
                         <a class="nav-link active" aria-current="page" href="admin.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#contentManagementModal">Manage Content</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#contentManagementModal">Manage Content</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Manage Users</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#mediaManagementModal">Manage Media</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Site Settings</a>
+                        <a class="nav-link" href="logout.php">Logout</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Logout</a> </li>
                 </ul>
             </div>
         </div>
@@ -369,7 +443,7 @@ mysqli_close($conn);
 
         <?php
         // Display login success message
-        if(isset($_GET['status']) && $_GET['status'] == 'loggedin_success'){
+        if (isset($_GET['status']) && $_GET['status'] == 'loggedin_success') {
             echo '<div class="alert alert-success" role="alert">
                     You have been successfully logged in!
                   </div>';
@@ -378,40 +452,37 @@ mysqli_close($conn);
         <?php echo $message; // Display messages from POST operations ?>
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">User Management</h5>
-                        <p class="card-text">Add, edit, or delete user accounts.</p>
-                        <a href="#" class="btn btn-primary">Go to Users</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">Content Management</h5>
                         <p class="card-text">Manage headings,Paragraphs.</p>
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#contentManagementModal">
+                        <a href="#" class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#contentManagementModal">
                             Go to Content
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">Site Settings</h5>
-                        <p class="card-text">Configure global website settings.</p>
-                        <a href="#" class="btn btn-warning">Go to Settings</a>
+                        <h5 class="card-title">Media Management</h5>
+                        <p class="card-text">Manage images, videos, and other media.</p>
+                        <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#mediaManagementModal">
+                            Go to Media
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="contentManagementModal" tabindex="-1" aria-labelledby="contentManagementModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl"> <div class="modal-content">
+    <div class="modal fade" id="contentManagementModal" tabindex="-1" aria-labelledby="contentManagementModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="contentManagementModalLabel">Manage Website Content</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -432,7 +503,8 @@ mysqli_close($conn);
                                 </select>
                             </div>
 
-                            <div class="form-group" id="contentKeySelectGroup" style="<?php echo !empty($selected_main_heading) ? 'display: block;' : 'display: none;'; ?>">
+                            <div class="form-group" id="contentKeySelectGroup"
+                                style="<?php echo !empty($selected_main_heading) ? 'display: block;' : 'display: none;'; ?>">
                                 <label for="contentKeySelect">Select Content Key:</label>
                                 <select class="form-select" id="contentKeySelect" name="content_key" required>
                                     <option value="">-- Select a Key --</option>
@@ -451,21 +523,26 @@ mysqli_close($conn);
 
                             <div class="form-group">
                                 <label for="currentContent">Current Content:</label>
-                                <div id="currentContentDisplay" class="form-control" style="white-space: pre-wrap; word-wrap: break-word;">
+                                <div id="currentContentDisplay" class="form-control"
+                                    style="white-space: pre-wrap; word-wrap: break-word;">
                                     <?php echo htmlspecialchars($current_content); ?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="newContentText">Enter New Text:</label>
-                                <textarea class="form-control" id="newContentText" name="new_content_text" rows="5" required><?php echo htmlspecialchars($current_content); ?></textarea>
+                                <textarea class="form-control" id="newContentText" name="new_content_text" rows="5"
+                                    required><?php echo htmlspecialchars($current_content); ?></textarea>
                             </div>
-                            <button type="submit" name="update_content" class="btn btn-primary mt-3">Change Text</button>
+                            <button type="submit" name="update_content" class="btn btn-primary mt-3">Change
+                                Text</button>
                         </form>
 
                         <div class="history-table-container mt-5">
                             <h3>Content Change History</h3>
-                            <form method="post" action="admin.php" onsubmit="return confirm('Are you sure you want to clear all history? This action cannot be undone.');">
-                                <button type="submit" name="clear_history" class="btn btn-danger mb-3">Clear All History</button>
+                            <form method="post" action="admin.php"
+                                onsubmit="return confirm('Are you sure you want to clear all history? This action cannot be undone.');">
+                                <button type="submit" name="clear_history" class="btn btn-danger mb-3">Clear All
+                                    History</button>
                             </form>
                             <?php if (empty($content_history)): ?>
                                 <p>No content change history available.</p>
@@ -493,9 +570,12 @@ mysqli_close($conn);
                                                     <td><?php echo htmlspecialchars($entry['changed_by']); ?></td>
                                                     <td><?php echo htmlspecialchars($entry['changed_at']); ?></td>
                                                     <td>
-                                                        <form method="post" action="admin.php" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to revert this change? This will update the live content.');">
-                                                            <input type="hidden" name="history_id_to_redo" value="<?php echo htmlspecialchars($entry['id']); ?>">
-                                                            <button type="submit" name="redo_last_change" class="btn btn-warning btn-redo">Redo</button>
+                                                        <form method="post" action="admin.php" style="display:inline-block;"
+                                                            onsubmit="return confirm('Are you sure you want to revert this change? This will update the live content.');">
+                                                            <input type="hidden" name="history_id_to_redo"
+                                                                value="<?php echo htmlspecialchars($entry['id']); ?>">
+                                                            <button type="submit" name="redo_last_change"
+                                                                class="btn btn-warning btn-redo">Redo</button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -513,139 +593,163 @@ mysqli_close($conn);
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mainHeadingSelect = document.getElementById('mainHeadingSelect');
-            const contentKeySelectGroup = document.getElementById('contentKeySelectGroup');
-            const contentKeySelect = document.getElementById('contentKeySelect');
-            const currentContentDisplay = document.getElementById('currentContentDisplay');
-            const newContentTextarea = document.getElementById('newContentText');
+    <div class="modal fade" id="mediaManagementModal" tabindex="-1" aria-labelledby="mediaManagementModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mediaManagementModalLabel">Manage Media Content</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs" id="mediaTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="images-tab" data-bs-toggle="tab"
+                                data-bs-target="#images" type="button" role="tab">Images</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos"
+                                type="button" role="tab">Videos</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="text-tab" data-bs-toggle="tab" data-bs-target="#text"
+                                type="button" role="tab">Text Content</button>
+                        </li>
+                    </ul>
 
-            // Function to load content for a selected key
-            function loadContentForKey(selectedKey) {
-                if (selectedKey) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', 'admin.php?key=' + encodeURIComponent(selectedKey), true);
-                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Indicate it's an AJAX request
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            currentContentDisplay.textContent = xhr.responseText;
-                            newContentTextarea.value = xhr.responseText;
-                        } else {
-                            currentContentDisplay.textContent = 'Error loading content.';
-                            newContentTextarea.value = '';
-                        }
-                    };
-                    xhr.send();
-                } else {
-                    currentContentDisplay.textContent = '';
-                    newContentTextarea.value = '';
-                }
-            }
+                    <div class="tab-content" id="mediaTabsContent">
+                        <!-- Images Tab -->
+                        <div class="tab-pane fade show active" id="images" role="tabpanel">
+                            <div class="row mt-3">
+                                <?php
+                                $images = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='image'");
+                                while ($img = $images->fetch_assoc()):
+                                    ?>
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card">
+                                            <img src="../<?php echo $img['file_path']; ?>" class="card-img-top"
+                                                alt="<?php echo $img['alt_text']; ?>">
+                                            <div class="card-body">
+                                                <h5><?php echo $img['description']; ?></h5>
+                                                <p>Section: <?php echo $img['section']; ?></p>
+                                                <button class="btn btn-sm btn-primary edit-media"
+                                                    data-id="<?php echo $img['id']; ?>">Edit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                            </div>
+                        </div>
 
-            // Function to populate contentKeySelect based on selected main heading
-            function populateContentKeys(selectedMainHeading) {
-                if (selectedMainHeading) {
-                    contentKeySelectGroup.style.display = 'block'; // Show the second dropdown
-                    contentKeySelect.innerHTML = '<option value="">-- Loading Keys --</option>'; // Clear and show loading state
-                    currentContentDisplay.textContent = ''; // Clear content display
-                    newContentTextarea.value = ''; // Clear textarea
+                        <!-- Videos Tab -->
+                        <div class="tab-pane fade" id="videos" role="tabpanel">
+                            <div class="row mt-3">
+                                <?php
+                                $videos = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='video'");
+                                while ($vid = $videos->fetch_assoc()):
+                                    ?>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5><?php echo $vid['description']; ?></h5>
+                                                <p>File: <?php echo $vid['file_path']; ?></p>
+                                                <p>Section: <?php echo $vid['section']; ?></p>
+                                                <button class="btn btn-sm btn-primary edit-media"
+                                                    data-id="<?php echo $vid['id']; ?>">Edit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                            </div>
+                        </div>
 
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('GET', 'admin.php?main_heading=' + encodeURIComponent(selectedMainHeading), true);
-                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try {
-                                const keys = JSON.parse(xhr.responseText);
-                                contentKeySelect.innerHTML = '<option value="">-- Select a Key --</option>'; // Reset
-                                keys.forEach(function(key) {
-                                    const option = document.createElement('option');
-                                    option.value = key;
-                                    option.textContent = key;
-                                    contentKeySelect.appendChild(option);
-                                });
+                        <!-- Text Tab -->
+                        <div class="tab-pane fade" id="text" role="tabpanel">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Section</th>
+                                        <th>Description</th>
+                                        <th>Content Preview</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $texts = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='text'");
+                                    while ($txt = $texts->fetch_assoc()):
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $txt['section']; ?></td>
+                                            <td><?php echo $txt['description']; ?></td>
+                                            <td><?php echo substr($txt['content_text'], 0, 50) . '...'; ?></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary edit-media"
+                                                    data-id="<?php echo $txt['id']; ?>">Edit</button>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addMediaModal">Add
+                        New</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                // After populating, if a key was previously selected (e.g., on form submission),
-                                // try to re-select it and load its content.
-                                const previouslySelectedKey = "<?php echo htmlspecialchars($selected_key); ?>";
-                                if (previouslySelectedKey && keys.includes(previouslySelectedKey)) {
-                                    contentKeySelect.value = previouslySelectedKey;
-                                    loadContentForKey(previouslySelectedKey);
-                                }
-                            } catch (e) {
-                                console.error('Error parsing JSON:', e, xhr.responseText);
-                                contentKeySelect.innerHTML = '<option value="">-- Error loading keys --</option>';
-                            }
-                        } else {
-                            contentKeySelect.innerHTML = '<option value="">-- Error loading keys --</option>';
-                        }
-                    };
-                    xhr.send();
-                } else {
-                    contentKeySelectGroup.style.display = 'none'; // Hide the second dropdown
-                    contentKeySelect.innerHTML = '<option value="">-- Select a Key --</option>'; // Reset options
-                    currentContentDisplay.textContent = '';
-                    newContentTextarea.value = '';
-                }
-            }
+    <!-- Add/Edit Media Modal -->
+    <div class="modal fade" id="editMediaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Media</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="mediaForm" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" id="mediaId">
+                        <input type="hidden" name="content_type" id="contentType">
 
-            // Event listener for the Main Heading dropdown
-            mainHeadingSelect.addEventListener('change', function() {
-                populateContentKeys(this.value);
-            });
+                        <div class="mb-3">
+                            <label class="form-label">Section</label>
+                            <input type="text" class="form-control" name="section" id="mediaSection" required>
+                        </div>
 
-            // Event listener for the Content Key dropdown
-            contentKeySelect.addEventListener('change', function() {
-                loadContentForKey(this.value);
-            });
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" name="description" id="mediaDescription" required>
+                        </div>
 
-            // Initial load logic: If a main heading was already selected (e.g., via POST on page reload),
-            // populate the second dropdown and load content for the selected key.
-            const initialMainHeading = "<?php echo htmlspecialchars($selected_main_heading); ?>";
-            if (initialMainHeading) {
-                populateContentKeys(initialMainHeading);
-            }
-            // If main heading is not selected, but a key is (shouldn't happen often with the new flow,
-            // but good for robustness or direct URL access with ?key= param)
-            else if ("<?php echo htmlspecialchars($selected_key); ?>") {
-                // This case is largely handled by the PHP, which tries to get the main_heading
-                // for the selected key and then populates. But for a clean JS start:
-                // If main_heading is empty but selected_key is present, the PHP block handles
-                // fetching the correct main_heading and then populating $allContentKeys
-                // and $selected_main_heading. So, the above `if (initialMainHeading)` will catch it.
-            }
+                        <div class="mb-3" id="fileUploadGroup">
+                            <label class="form-label">File</label>
+                            <input type="file" class="form-control" name="file" id="mediaFile">
+                            <small class="text-muted" id="currentFile"></small>
+                        </div>
 
-            // --- NEW JAVASCRIPT BLOCK FOR SLIDE-AWAY LOGIN MESSAGE ---
-            const loginSuccessAlert = document.querySelector('.alert.alert-success');
+                        <div class="mb-3" id="altTextGroup">
+                            <label class="form-label">Alt Text</label>
+                            <input type="text" class="form-control" name="alt_text" id="mediaAltText">
+                        </div>
 
-            // Check if this alert is the one displayed on login success (not from a POST message)
-            // It will only have a 'status' GET parameter if it's a fresh login
-            const urlParams = new URLSearchParams(window.location.search);
-            const statusParam = urlParams.get('status');
+                        <div class="mb-3" id="contentTextGroup">
+                            <label class="form-label">Content Text</label>
+                            <textarea class="form-control" name="content_text" id="mediaContentText"
+                                rows="5"></textarea>
+                        </div>
 
-            if (loginSuccessAlert && statusParam === 'loggedin_success') {
-                loginSuccessAlert.classList.add('slide-fade-out');
-
-                setTimeout(function() {
-                    loginSuccessAlert.classList.add('hidden');
-
-                    loginSuccessAlert.addEventListener('transitionend', function() {
-                        loginSuccessAlert.remove();
-                    }, { once: true });
-                }, 3000); // 3 seconds before the animation starts
-            }
-            // --- END NEW JAVASCRIPT BLOCK ---
-
-            // --- NEW JAVASCRIPT FOR OPENING MODAL ON PAGE LOAD IF CONTENT WAS MANAGED ---
-            const contentManagedStatus = urlParams.get('status');
-            if (contentManagedStatus === 'content_managed') {
-                var contentModal = new bootstrap.Modal(document.getElementById('contentManagementModal'));
-                contentModal.show();
-            }
-            // --- END NEW JAVASCRIPT ---
-        });
-    </script>
+                        <button type="submit" name="save_media" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

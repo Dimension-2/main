@@ -69,3 +69,11 @@
             border: 0; /* Remove border when collapsed */
         }
         /* --- END NEW CSS --- */
+
+/* Make description text smaller */
+.latest-card-description {
+    font-size: 0.85rem;  /* Smaller font size */
+    color: #666;         /* Slightly lighter color */
+    line-height: 1.4;    /* Tighter line spacing */
+    margin-top: 0.5rem;  /* Reduce top margin */
+}
