@@ -223,6 +223,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // Successfully fetched current text
                     }
                     mysqli_stmt_close($stmt_get_current);
+
                 }
 
                 $revert_sql = "UPDATE website_content SET content_text = ? WHERE content_key = ?";
@@ -345,7 +346,7 @@ if ($result = mysqli_query($conn, $history_sql)) {
 }
 
 // Close connection at the end of the script
-mysqli_close($conn);
+
 
 ?>
 
@@ -622,8 +623,11 @@ mysqli_close($conn);
                         <div class="tab-pane fade show active" id="images" role="tabpanel">
                             <div class="row mt-3">
                                 <?php
-                                $images = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='image'");
-                                while ($img = $images->fetch_assoc()):
+                                $images = mysqli_query($conn, "SELECT * FROM Main_file_Content WHERE content_type='image'");
+                                if (!$images) {
+                                    die("Error fetching images: " . mysqli_error($conn));
+                                }
+                                while ($img = mysqli_fetch_assoc($images)):
                                     ?>
                                     <div class="col-md-4 mb-4">
                                         <div class="card">
@@ -751,5 +755,6 @@ mysqli_close($conn);
         </div>
     </div>
 </body>
-
+<?php mysqli_close($conn); ?>
+</html>
 </html>
