@@ -358,15 +358,19 @@ if ($result = mysqli_query($conn, $history_sql)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/admin-styles.css">
+    <!-- Remove or fix this line -->
+    <!-- <link href="admin-styles.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="../css/admin-css.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+<!-- Keep only one of these -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
         // Show/hide content key dropdown based on main heading selection
@@ -405,6 +409,69 @@ if ($result = mysqli_query($conn, $history_sql)) {
                     }
                 });
             }
+        });
+    });
+</script>
+<script>
+    // Remove duplicate document.ready and fix closing braces
+    $(document).ready(function () {
+        // Content dropdown handlers (existing code)
+
+        // Media edit handler
+        $(document).on('click', '.edit-media', function (e) {
+            e.preventDefault();
+            const mediaId = $(this).data('id');
+            console.log("Edit clicked, ID:", mediaId);
+
+            $.ajax({
+                url: 'get_media.php',
+                type: 'GET',
+                data: { id: mediaId },
+                dataType: 'json',
+                success: function (response) {
+                    console.log("Response:", response);
+                    $('#mediaId').val(response.id);
+                    $('#contentType').val(response.content_type);
+                    $('#mediaSection').val(response.section);
+                    $('#mediaDescription').val(response.description);
+                    $('#mediaAltText').val(response.alt_text);
+
+                    if (response.file_path) {
+                        $('#currentFile').html(`<a href="../${response.file_path}" target="_blank">View File</a>`);
+                    }
+
+                    $('#editMediaModal').modal('show');
+                },
+                error: function (xhr) {
+                    console.error("Error:", xhr.responseText);
+                    alert("Error loading data");
+                }
+            });
+        });
+
+        // Form submission handler
+        $('#mediaForm').on('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+            $.ajax({
+                url: 'update_media.php', // Remove leading slash
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log("Success:", response);
+                    $('#editMediaModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    console.error("Error:", xhr.responseText);
+                }
+            });
         });
     });
 </script>
@@ -690,6 +757,8 @@ if ($result = mysqli_query($conn, $history_sql)) {
                                             <td>
                                                 <button class="btn btn-sm btn-primary edit-media"
                                                     data-id="<?php echo $txt['id']; ?>">Edit</button>
+                                                <script>console.log('Edit button test');</script>
+
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
@@ -718,9 +787,11 @@ if ($result = mysqli_query($conn, $history_sql)) {
                 </div>
                 <div class="modal-body">
                     <form id="mediaForm" method="post" enctype="multipart/form-data">
+                        <!-- Hidden fields (not editable by users) -->
                         <input type="hidden" name="id" id="mediaId">
                         <input type="hidden" name="content_type" id="contentType">
 
+                        <!-- Editable fields -->
                         <div class="mb-3">
                             <label class="form-label">Section</label>
                             <input type="text" class="form-control" name="section" id="mediaSection" required>
@@ -755,6 +826,16 @@ if ($result = mysqli_query($conn, $history_sql)) {
         </div>
     </div>
 </body>
+<script>
+    $(document).on('click', '.edit-media', function () {
+        console.log('Edit button clicked!'); // Add this line
+        const mediaId = $(this).data('id');
+        console.log('Media ID:', mediaId); // Add this line
+        // Rest of your code...
+    });
+</script>
 <?php mysqli_close($conn); ?>
+
 </html>
+
 </html>
