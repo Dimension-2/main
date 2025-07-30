@@ -154,7 +154,8 @@ try {
     <section class="hero-section">
         <div class="hero-content">
             <div class="hero-text">
-                <h1><?php echo $heroHeading['content_text']; ?></h1>
+                <h1><?php echo !empty($heroHeading['content_text']) ? htmlspecialchars($heroHeading['content_text']) : 'Default Heading'; ?>
+                </h1>
                 <h2 class="display-5"><?php echo $heroSubheading['content_text']; ?></h2>
                 <p class="hero-subtext"><?php echo $heroText['content_text']; ?></p>
                 <button class="btn btn-primary btn-pink">Talk to an Expert <i

@@ -444,28 +444,45 @@ if ($result = mysqli_query($conn, $history_sql)) {
                 data: { id: mediaId },
                 dataType: 'json',
                 success: function (response) {
-                    // Set form values
+                    // Set common form values
                     $('#mediaId').val(response.id);
                     $('#contentType').val(response.content_type);
                     $('#mediaSection').val(response.section);
                     $('#mediaDescription').val(response.description);
 
-                    // Handle content types
-                    if (response.content_type === 'image') {
-                        $('#fileUploadGroup, #altTextGroup').show();
-                        $('#contentTextGroup').hide();
-                        $('#mediaAltText').val(response.alt_text || '');
-
-                        $('#currentFile').html(
-                            response.file_path
-                                ? `Current file: <a href="../${response.file_path}" target="_blank">View</a> | 
+                    // Handle different content types
+                    switch (response.content_type) {
+                        case 'image':
+                            $('#fileUploadGroup, #altTextGroup').show();
+                            $('#contentTextGroup').hide();
+                            $('#mediaAltText').val(response.alt_text || '');
+                            $('#currentFile').html(
+                                response.file_path
+                                    ? `Current file: <a href="../${response.file_path}" target="_blank">View</a> | 
                                <a href="#" class="remove-file" data-id="${response.id}">Remove</a>`
-                                : 'No file uploaded'
-                        );
-                    } else {
-                        $('#fileUploadGroup, #altTextGroup').hide();
-                        $('#contentTextGroup').show();
-                        $('#mediaContentText').val(response.content_text || '');
+                                    : 'No file uploaded'
+                            );
+                            break;
+
+                        case 'video':
+                            $('#fileUploadGroup').show();
+                            $('#altTextGroup, #contentTextGroup').hide();
+                            $('#currentFile').html(
+                                response.file_path
+                                    ? `Current file: <a href="../${response.file_path}" target="_blank">View</a>`
+                                    : 'No file uploaded'
+                            );
+                            break;
+
+                        case 'text':
+                            $('#fileUploadGroup, #altTextGroup').hide();
+                            $('#contentTextGroup').show();
+                            $('#mediaContentText').val(response.content_text || '');
+                            break;
+
+                        default:
+                            console.warn('Unknown content type:', response.content_type);
+                            $('#fileUploadGroup, #altTextGroup, #contentTextGroup').hide();
                     }
 
                     $('#editMediaModal').modal('show');
@@ -483,22 +500,19 @@ if ($result = mysqli_query($conn, $history_sql)) {
             const submitBtn = $(this).find('[type="submit"]');
             submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
 
-            // File validation
+            // File validation - NEW VERSION
+            // File validation - Unlimited version (improved)
+            // File validation - All inclusive version
             const file = $('#mediaFile')[0].files[0];
             if (file) {
-                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Only JPG, PNG or GIF images allowed');
-                    submitBtn.prop('disabled', false).html('Save Changes');
-                    return;
-                }
-
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Image must be smaller than 5MB');
+                // Basic check for image or video files
+                if (!file.type.match(/^(image|video|application)\//)) {
+                    alert('Please select an image or video file');
                     submitBtn.prop('disabled', false).html('Save Changes');
                     return;
                 }
             }
+
 
             $.ajax({
                 url: 'update_media.php',
@@ -751,7 +765,8 @@ if ($result = mysqli_query($conn, $history_sql)) {
                         <div class="tab-pane fade show active" id="images" role="tabpanel">
                             <div class="row mt-3">
                                 <?php
-                                $images = mysqli_query($conn, "SELECT * FROM Main_file_Content WHERE content_type='image'");
+                                $images = mysqli_query($conn, "SELECT * FROM main_file_content WHERE content_type='image'");
+
                                 if (!$images) {
                                     die("Error fetching images: " . mysqli_error($conn));
                                 }
@@ -777,7 +792,8 @@ if ($result = mysqli_query($conn, $history_sql)) {
                         <div class="tab-pane fade" id="videos" role="tabpanel">
                             <div class="row mt-3">
                                 <?php
-                                $videos = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='video'");
+                                $videos = $conn->query("SELECT * FROM main_file_content WHERE content_type='video'");
+
                                 while ($vid = $videos->fetch_assoc()):
                                     ?>
                                     <div class="col-md-6 mb-4">
@@ -808,18 +824,19 @@ if ($result = mysqli_query($conn, $history_sql)) {
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $texts = $conn->query("SELECT * FROM Main_file_Content WHERE content_type='text'");
+                                    $texts = $conn->query("SELECT * FROM main_file_content WHERE content_type='text'");
                                     while ($txt = $texts->fetch_assoc()):
                                         ?>
                                         <tr>
-                                            <td><?php echo $txt['section']; ?></td>
-                                            <td><?php echo $txt['description']; ?></td>
-                                            <td><?php echo substr($txt['content_text'], 0, 50) . '...'; ?></td>
+                                            <td><?php echo htmlspecialchars($txt['section']); ?></td>
+                                            <td><?php echo htmlspecialchars($txt['description']); ?></td>
+                                            <td><?php echo htmlspecialchars(substr($txt['content_text'], 0, 50)) . '...'; ?>
+                                            </td>
                                             <td>
                                                 <button class="btn btn-sm btn-primary edit-media"
-                                                    data-id="<?php echo $txt['id']; ?>">Edit</button>
-                                                <script>console.log('Edit button test');</script>
-
+                                                    data-id="<?php echo $txt['id']; ?>">
+                                                    Edit
+                                                </button>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
@@ -909,7 +926,21 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
     </div>
 </body>
+<script>
+    // In your media upload form script
+    $('#mediaFile').on('change', function () {
+        const file = this.files[0];
+        const validTypes = [
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/svg+xml', 'image/tiff',
+            'video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv', 'video/x-flv', 'video/x-matroska', 'video/webm'
+        ];
 
+        if (!validTypes.includes(file.type)) {
+            alert('Invalid file type. Please select an image or video file.');
+            $(this).val('');
+        }
+    });
+</script>
 <script>
     function loadHistory(mediaId) {
         $.ajax({
