@@ -415,13 +415,28 @@ if ($result = mysqli_query($conn, $history_sql)) {
 <script>
     // Remove duplicate document.ready and fix closing braces
     $(document).ready(function () {
-        // Content dropdown handlers (existing code)
+        // Image Preview Handler (jQuery version)
+        $('#mediaFile').on('change', function (e) {
+            const preview = $('#imagePreview');
+            const file = this.files[0];
 
-        // Media edit handler
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.attr('src', e.target.result).show();
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.hide();
+            }
+        });
+
+        // Media Edit Handler
         $(document).on('click', '.edit-media', function (e) {
             e.preventDefault();
             const mediaId = $(this).data('id');
-            console.log("Edit clicked, ID:", mediaId);
 
             $.ajax({
                 url: 'get_media.php',
@@ -429,49 +444,91 @@ if ($result = mysqli_query($conn, $history_sql)) {
                 data: { id: mediaId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log("Response:", response);
+                    // Set form values
                     $('#mediaId').val(response.id);
                     $('#contentType').val(response.content_type);
                     $('#mediaSection').val(response.section);
                     $('#mediaDescription').val(response.description);
-                    $('#mediaAltText').val(response.alt_text);
 
-                    if (response.file_path) {
-                        $('#currentFile').html(`<a href="../${response.file_path}" target="_blank">View File</a>`);
+                    // Handle content types
+                    if (response.content_type === 'image') {
+                        $('#fileUploadGroup, #altTextGroup').show();
+                        $('#contentTextGroup').hide();
+                        $('#mediaAltText').val(response.alt_text || '');
+
+                        $('#currentFile').html(
+                            response.file_path
+                                ? `Current file: <a href="../${response.file_path}" target="_blank">View</a> | 
+                               <a href="#" class="remove-file" data-id="${response.id}">Remove</a>`
+                                : 'No file uploaded'
+                        );
+                    } else {
+                        $('#fileUploadGroup, #altTextGroup').hide();
+                        $('#contentTextGroup').show();
+                        $('#mediaContentText').val(response.content_text || '');
                     }
 
                     $('#editMediaModal').modal('show');
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
-                    alert("Error loading data");
+                    alert("Failed to load media data");
                 }
             });
         });
 
-        // Form submission handler
-        $('#mediaForm').on('submit', function (e) {
+        // Form Submission Handler
+        $('#mediaForm').off('submit').on('submit', function (e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
+            const submitBtn = $(this).find('[type="submit"]');
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+
+            // File validation
+            const file = $('#mediaFile')[0].files[0];
+            if (file) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Only JPG, PNG or GIF images allowed');
+                    submitBtn.prop('disabled', false).html('Save Changes');
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image must be smaller than 5MB');
+                    submitBtn.prop('disabled', false).html('Save Changes');
+                    return;
+                }
             }
 
             $.ajax({
-                url: 'update_media.php', // Remove leading slash
+                url: 'update_media.php',
                 type: 'POST',
-                data: formData,
+                data: new FormData(this),
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    console.log("Success:", response);
                     $('#editMediaModal').modal('hide');
                     location.reload();
                 },
                 error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
+                    alert("Error: " + xhr.responseText);
+                },
+                complete: function () {
+                    submitBtn.prop('disabled', false).html('Save Changes');
                 }
             });
+        });
+
+        // File Removal Handler
+        $(document).on('click', '.remove-file', function (e) {
+            e.preventDefault();
+            if (confirm('Remove this file?')) {
+                const mediaId = $(this).data('id');
+                $.post('remove_file.php', { id: mediaId }, function () {
+                    $('#editMediaModal').modal('hide');
+                    location.reload();
+                });
+            }
         });
     });
 </script>
@@ -499,6 +556,10 @@ if ($result = mysqli_query($conn, $history_sql)) {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="history-tab" data-bs-toggle="tab"
+                            data-bs-target="#history">History</button>
                     </li>
                 </ul>
             </div>
@@ -769,9 +830,9 @@ if ($result = mysqli_query($conn, $history_sql)) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addMediaModal">Add
-                        New</button>
+                        New</button> -->
                 </div>
             </div>
         </div>
@@ -806,6 +867,9 @@ if ($result = mysqli_query($conn, $history_sql)) {
                             <label class="form-label">File</label>
                             <input type="file" class="form-control" name="file" id="mediaFile">
                             <small class="text-muted" id="currentFile"></small>
+                            <div class="mt-2">
+                                <img id="imagePreview" src="#" alt="Preview" style="max-height: 200px; display: none;">
+                            </div>
                         </div>
 
                         <div class="mb-3" id="altTextGroup">
@@ -813,7 +877,8 @@ if ($result = mysqli_query($conn, $history_sql)) {
                             <input type="text" class="form-control" name="alt_text" id="mediaAltText">
                         </div>
 
-                        <div class="mb-3" id="contentTextGroup">
+                        <!-- MUST ADD style="display:none" -->
+                        <div class="mb-3" id="contentTextGroup" style="display:none">
                             <label class="form-label">Content Text</label>
                             <textarea class="form-control" name="content_text" id="mediaContentText"
                                 rows="5"></textarea>
@@ -821,11 +886,74 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
                         <button type="submit" name="save_media" class="btn btn-primary">Save Changes</button>
                     </form>
+                    <div class="mt-4">
+                        <h5>Change History</h5>
+                        <button class="btn btn-sm btn-danger mb-2" id="clearHistory">Clear History</button>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Changed By</th>
+                                    <th>Old Value</th>
+                                    <th>New Value</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Filled by AJAX -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 </body>
+
+<script>
+    function loadHistory(mediaId) {
+        $.ajax({
+            url: 'get_history.php',
+            data: { media_id: mediaId },
+            success: function (response) {
+                let html = '';
+                response.forEach(entry => {
+                    html += `
+                <tr>
+                    <td>${entry.changed_by}</td>
+                    <td>${entry.old_data.section} (${entry.old_data.description})</td>
+                    <td>${entry.new_data.section} (${entry.new_data.description})</td>
+                    <td><button class="btn btn-sm btn-warning redo-btn" data-id="${entry.id}">Redo</button></td>
+                </tr>`;
+                });
+                $('#historyTableBody').html(html);
+            }
+        });
+    }
+
+    // Call this when opening edit modal:
+    loadHistory(mediaId);
+</script>
+<script>
+    $(document).on('click', '.redo-btn', function () {
+        const historyId = $(this).data('id');
+        if (confirm('Revert to this version?')) {
+            $.post('redo_media.php', { history_id: historyId }, function () {
+                loadHistory(mediaId); // Reload history
+                $('#editMediaModal').modal('hide');
+            });
+        }
+    });
+</script>
+<script>
+    $('#clearHistory').click(function () {
+        if (confirm('Clear all history for this media?')) {
+            $.post('clear_history.php', { media_id: mediaId }, function () {
+                loadHistory(mediaId); // Reload (now empty)
+            });
+        }
+    });
+</script>
 <script>
     $(document).on('click', '.edit-media', function () {
         console.log('Edit button clicked!'); // Add this line

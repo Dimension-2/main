@@ -111,6 +111,14 @@ try {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
+                    <a class="navbar-brand" href="index.php">
+                        <?php if ($navbarLogo): ?>
+                            <img src="<?php echo htmlspecialchars($navbarLogo['file_path']); ?>"
+                                alt="<?php echo htmlspecialchars($navbarLogo['alt_text']); ?>" height="30">
+                        <?php else: ?>
+                            <img src="image/forti fund.PNG" alt="Default Logo" height="30">
+                        <?php endif; ?>
+                    </a>
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="faqs.php">FAQ</a>
@@ -137,14 +145,7 @@ try {
                         </li>
                     </ul>
                 </div>
-                <a class="navbar-brand" href="index.php">
-                    <?php if ($navbarLogo): ?>
-                        <img src="<?php echo htmlspecialchars($navbarLogo['file_path']); ?>"
-                            alt="<?php echo htmlspecialchars($navbarLogo['alt_text']); ?>" height="30">
-                    <?php else: ?>
-                        <img src="image/default-logo.png" alt="Default Logo" height="30">
-                    <?php endif; ?>
-                </a>
+
             </div>
         </nav>
     </header>
