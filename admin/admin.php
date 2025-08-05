@@ -7,15 +7,36 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php"); // Correct: login.php is in the same directory (admin/)
     exit;
 }
-// Handle Clear All Requests
+
+// Handle Clear All Requests (place this near the top after session_start())
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
-    $delete_sql = "TRUNCATE TABLE preorder_requests";
-    if (mysqli_query($conn, $delete_sql)) {
-        $message = "<div class='alert alert-success'>All pre-order requests have been cleared!</div>";
-    } else {
-        $message = "<div class='alert alert-danger'>Error clearing requests: " . mysqli_error($conn) . "</div>";
+    require_once __DIR__ . '/../config.php'; // Adjust path as needed
+
+    // Verify connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
     }
+
+    // Execute query
+    if ($conn->query("TRUNCATE TABLE preorder_requests") === TRUE) {
+        $_SESSION['success_message'] = "All pre-order requests cleared successfully!";
+    } else {
+        $_SESSION['error_message'] = "Error clearing requests: " . $conn->error;
+    }
+
+    header("Location: admin.php");
+    exit();
 }
+
+// // Handle Clear All Requests
+// if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
+//     $delete_sql = "TRUNCATE TABLE preorder_requests";
+//     if (mysqli_query($conn, $delete_sql)) {
+//         $message = "<div class='alert alert-success'>All pre-order requests have been cleared!</div>";
+//     } else {
+//         $message = "<div class='alert alert-danger'>Error clearing requests: " . mysqli_error($conn) . "</div>";
+//     }
+// }
 // After the clear query succeeds
 // Handle Clear All Requests
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
@@ -1050,7 +1071,6 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
 </body>
 <script>
-    // Enhanced Clear Confirmation with AJAX and SweetAlert
     $(document).on('submit', 'form[onsubmit]', function (e) {
         e.preventDefault();
         const form = this;
@@ -1071,46 +1091,60 @@ if ($result = mysqli_query($conn, $history_sql)) {
             no-repeat
         `,
             showLoaderOnConfirm: true,
-            preConfirm: () => {
-                return $.ajax({
-                    url: $(form).attr('action'),
-                    method: 'POST',
-                    data: $(form).serialize()
-                }).fail(error => {
-                    Swal.showValidationMessage(`
-                    Request failed: ${error.statusText}
-                `);
-                });
-            }
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
             if (result.isConfirmed) {
-                // Close the modal
-                $('#preorderModal').modal('hide');
+                // Show loading state
+                Swal.showLoading();
 
-                // Show success message
-                Swal.fire({
-                    title: 'Cleared!',
-                    text: 'All pre-order requests have been deleted.',
-                    icon: 'success',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK',
-                    allowOutsideClick: false
-                }).then(() => {
-                    // Refresh the table data without full page reload
-                    $.ajax({
-                        url: 'get_preorders.php',
-                        method: 'GET',
-                        success: function (data) {
-                            $('.table tbody').html(data);
-                        },
-                        error: function () {
-                            location.reload(); // Fallback to full reload
-                        }
-                    });
+                // Submit via AJAX
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: 'POST',
+                    data: $(form).serialize(),
+                    success: function () {
+                        // Close the modal
+                        $('#preorderModal').modal('hide');
+
+                        // Show success message
+                        Swal.fire({
+                            title: 'Cleared!',
+                            text: 'All pre-order requests have been deleted.',
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false
+                        }).then(() => {
+                            // Refresh the table data
+                            refreshPreordersTable();
+                        });
+                    },
+                    error: function (xhr) {
+                        Swal.fire(
+                            'Error!',
+                            'Failed to clear requests: ' + xhr.statusText,
+                            'error'
+                        );
+                    }
                 });
             }
         });
     });
+
+    // Separate function for refreshing the table
+    function refreshPreordersTable() {
+        $.ajax({
+            url: 'get_preorders.php',
+            method: 'GET',
+            success: function (data) {
+                $('.table tbody').html(data);
+            },
+            error: function () {
+                // Fallback to full page reload if AJAX fails
+                location.reload();
+            }
+        });
+    }
 </script>
 <script>
     //javascript for pre-order form submission
@@ -1238,6 +1272,41 @@ if ($result = mysqli_query($conn, $history_sql)) {
         const mediaId = $(this).data('id');
         console.log('Media ID:', mediaId); // Add this line
         // Rest of your code...
+    });
+</script>
+<script>
+    $(document).on('click', '.view-details', function () {
+        const requestId = $(this).data('id');
+
+        $.ajax({
+            url: 'get_request_details.php',
+            type: 'GET',
+            dataType: 'json', // Add this line
+            data: { id: requestId },
+            success: function (response) {
+                if (response.error) {
+                    $('#requestDetails').html('<div class="alert alert-danger">' + response.error + '</div>');
+                    return;
+                }
+
+                const details = `
+                <p><strong>Name:</strong> ${response.first_name} ${response.last_name}</p>
+                <p><strong>Job Title:</strong> ${response.job_title}</p>
+                <p><strong>Company:</strong> ${response.company_name}</p>
+                <p><strong>Phone:</strong> ${response.phone_number}</p>
+                <p><strong>Email:</strong> ${response.email}</p>
+                <p><strong>Industry:</strong> ${response.industry}</p>
+                <p><strong>Employees:</strong> ${response.num_employees}</p>
+                <p><strong>Request Type:</strong> ${response.help_option}</p>
+                <p><strong>Details:</strong><br>${response.additional_details || 'None'}</p>
+                <p><strong>Submitted:</strong> ${new Date(response.submitted_at).toLocaleString()}</p>
+            `;
+                $('#requestDetails').html(details);
+            },
+            error: function (xhr) {
+                $('#requestDetails').html('<div class="alert alert-danger">Error loading details. Status: ' + xhr.status + '</div>');
+            }
+        });
     });
 </script>
 <?php mysqli_close($conn); ?>

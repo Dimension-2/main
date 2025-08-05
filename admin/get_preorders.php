@@ -1,8 +1,9 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../config.php';
 
 $requests = $conn->query("SELECT * FROM preorder_requests ORDER BY submitted_at DESC");
-while ($row = $requests->fetch_assoc()): ?>
+while ($row = $requests->fetch_assoc()):
+?>
 <tr>
     <td><?= $row['id'] ?></td>
     <td><?= htmlspecialchars($row['first_name'].' '.$row['last_name']) ?></td>
@@ -19,4 +20,4 @@ while ($row = $requests->fetch_assoc()): ?>
         </button>
     </td>
 </tr>
-<?php endwhile;
+<?php endwhile; ?>
