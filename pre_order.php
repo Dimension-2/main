@@ -1,16 +1,21 @@
 <?php include_once 'get_content.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo getContent('preorder_page_title'); ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9Oer2f3hU81YUuXoSM1+1QVxPEjD0xS5gLz9+9dF+R7" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9Oer2f3hU81YUuXoSM1+1QVxPEjD0xS5gLz9+9dF+R7" crossorigin="anonymous">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/pre_order.css">
-    
-    
+
+
 </head>
+
 <body>
 
     <div class="preorder-container">
@@ -24,11 +29,13 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="firstName"><?php echo getContent('preorder_label_first_name'); ?></label>
-                    <input type="text" class="form-control" id="firstName" name="firstName" required pattern="[A-Za-z]+" title="First name can only contain letters.">
+                    <input type="text" class="form-control" id="firstName" name="firstName" required pattern="[A-Za-z]+"
+                        title="First name can only contain letters.">
                 </div>
                 <div class="form-group">
                     <label for="lastName"><?php echo getContent('preorder_label_last_name'); ?></label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" required pattern="[A-Za-z]+" title="Last name can only contain letters.">
+                    <input type="text" class="form-control" id="lastName" name="lastName" required pattern="[A-Za-z]+"
+                        title="Last name can only contain letters.">
                 </div>
 
                 <div class="form-group">
@@ -42,7 +49,8 @@
 
                 <div class="form-group">
                     <label for="phoneNumber"><?php echo getContent('preorder_label_phone_number'); ?></label>
-                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required pattern="[0-9]{10,15}" title="Please enter a valid phone number (10-15 digits).">
+                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required
+                        pattern="[0-9]{10,15}" title="Please enter a valid phone number (10-15 digits).">
                 </div>
                 <div class="form-group">
                     <label for="email"><?php echo getContent('preorder_label_email'); ?></label>
@@ -57,7 +65,8 @@
                         <option value="tech"><?php echo getContent('preorder_option_technology'); ?></option>
                         <option value="healthcare"><?php echo getContent('preorder_option_healthcare'); ?></option>
                         <option value="retail"><?php echo getContent('preorder_option_retail'); ?></option>
-                        <option value="manufacturing"><?php echo getContent('preorder_option_manufacturing'); ?></option>
+                        <option value="manufacturing"><?php echo getContent('preorder_option_manufacturing'); ?>
+                        </option>
                         <option value="other"><?php echo getContent('preorder_option_other'); ?></option>
                     </select>
                 </div>
@@ -71,32 +80,46 @@
                 <legend><?php echo getContent('preorder_legend_how_can_we_help'); ?></legend>
                 <div class="radio-options-grid">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="businessInsurance" value="businessInsurance" required>
-                        <label class="form-check-label" for="businessInsurance"><?php echo getContent('preorder_radio_business_insurance'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="businessInsurance"
+                            value="businessInsurance" required>
+                        <label class="form-check-label"
+                            for="businessInsurance"><?php echo getContent('preorder_radio_business_insurance'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="employeeBenefits" value="employeeBenefits">
-                        <label class="form-check-label" for="employeeBenefits"><?php echo getContent('preorder_radio_employee_benefits'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="employeeBenefits"
+                            value="employeeBenefits">
+                        <label class="form-check-label"
+                            for="employeeBenefits"><?php echo getContent('preorder_radio_employee_benefits'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="retirementServices" value="retirementServices">
-                        <label class="form-check-label" for="retirementServices"><?php echo getContent('preorder_radio_retirement_services'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="retirementServices"
+                            value="retirementServices">
+                        <label class="form-check-label"
+                            for="retirementServices"><?php echo getContent('preorder_radio_retirement_services'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="hrServices" value="hrServices">
-                        <label class="form-check-label" for="hrServices"><?php echo getContent('preorder_radio_hr_services'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="hrServices"
+                            value="hrServices">
+                        <label class="form-check-label"
+                            for="hrServices"><?php echo getContent('preorder_radio_hr_services'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="personalLines" value="personalLines">
-                        <label class="form-check-label" for="personalLines"><?php echo getContent('preorder_radio_personal_lines'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="personalLines"
+                            value="personalLines">
+                        <label class="form-check-label"
+                            for="personalLines"><?php echo getContent('preorder_radio_personal_lines'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="wholesaleBenefits" value="wholesaleBenefits">
-                        <label class="form-check-label" for="wholesaleBenefits"><?php echo getContent('preorder_radio_wholesale_benefits'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="wholesaleBenefits"
+                            value="wholesaleBenefits">
+                        <label class="form-check-label"
+                            for="wholesaleBenefits"><?php echo getContent('preorder_radio_wholesale_benefits'); ?></label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="helpOptions" id="assetProtection" value="assetProtection">
-                        <label class="form-check-label" for="assetProtection"><?php echo getContent('preorder_radio_asset_protection'); ?></label>
+                        <input class="form-check-input" type="radio" name="helpOptions" id="assetProtection"
+                            value="assetProtection">
+                        <label class="form-check-label"
+                            for="assetProtection"><?php echo getContent('preorder_radio_asset_protection'); ?></label>
                     </div>
                 </div>
             </fieldset>
@@ -107,38 +130,59 @@
             </div>
 
             <div class="submit-button-container">
-                <button type="submit" class="submit-button"><?php echo getContent('preorder_submit_button_text'); ?></button>
+                <button type="submit"
+                    class="submit-button"><?php echo getContent('preorder_submit_button_text'); ?></button>
             </div>
         </form>
 
         <div class="form-footer">
-            <?php echo getContent('preorder_footer_text_part1'); ?> <a href="#"><?php echo getContent('preorder_footer_link_terms_privacy'); ?></a>. <?php echo getContent('preorder_footer_text_part2'); ?> <a href="#"><?php echo getContent('preorder_footer_link_notice_collection'); ?></a> <?php echo getContent('preorder_footer_text_part3'); ?> <a href="#"><?php echo getContent('preorder_footer_link_cookie_preferences'); ?></a>.<br>
-            <?php echo getContent('preorder_footer_recaptcha_text_part1'); ?> <a href="#"><?php echo getContent('preorder_footer_recaptcha_link_privacy'); ?></a> <?php echo getContent('preorder_footer_recaptcha_text_and'); ?> <a href="#"><?php echo getContent('preorder_footer_recaptcha_link_terms'); ?></a> <?php echo getContent('preorder_footer_recaptcha_text_apply'); ?>.
+            <?php echo getContent('preorder_footer_text_part1'); ?> <a
+                href="#"><?php echo getContent('preorder_footer_link_terms_privacy'); ?></a>.
+            <?php echo getContent('preorder_footer_text_part2'); ?> <a
+                href="#"><?php echo getContent('preorder_footer_link_notice_collection'); ?></a>
+            <?php echo getContent('preorder_footer_text_part3'); ?> <a
+                href="#"><?php echo getContent('preorder_footer_link_cookie_preferences'); ?></a>.<br>
+            <?php echo getContent('preorder_footer_recaptcha_text_part1'); ?> <a
+                href="#"><?php echo getContent('preorder_footer_recaptcha_link_privacy'); ?></a>
+            <?php echo getContent('preorder_footer_recaptcha_text_and'); ?> <a
+                href="#"><?php echo getContent('preorder_footer_recaptcha_link_terms'); ?></a>
+            <?php echo getContent('preorder_footer_recaptcha_text_apply'); ?>.
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script>
-        document.querySelector('.close-button').addEventListener('click', function() {
-            window.history.back();
-        });
+        document.getElementById('preorderForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
-        // Basic client-side form validation handling
-        document.getElementById('preorderForm').addEventListener('submit', function(event) {
-            // Check HTML5 validity
+            // Validate form
             if (!this.checkValidity()) {
-                // If form is invalid, Bootstrap's built-in validation messages will show
-                // We prevent default submission to let Bootstrap handle it visually
-                event.preventDefault();
                 event.stopPropagation();
-            } else {
-                // Form is valid, you can add your AJAX submission or further processing here
-                // For demonstration, we'll just log and prevent default submission
-                alert('Form submitted successfully! (This is a demo, no actual submission)');
-                event.preventDefault(); // Prevent actual form submission for demo
+                this.classList.add('was-validated');
+                return;
             }
-            this.classList.add('was-validated'); // Add Bootstrap's validation class
+
+            // Submit form via AJAX
+            fetch('process_preorder.php', {
+                method: 'POST',
+                body: new FormData(this)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Thank you for your pre-order! We will contact you soon.');
+                        window.location.href = 'index.php'; // Redirect after submission
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Network error: ' + error);
+                });
         });
     </script>
 </body>
+
 </html>

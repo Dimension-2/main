@@ -26,7 +26,12 @@ function getAllMainHeadings($conn)
     }
     return $headings;
 }
-
+//pre-order count function  
+function getPreorderCount($conn)
+{
+    $result = $conn->query("SELECT COUNT(*) FROM preorder_requests");
+    return $result->fetch_row()[0];
+}
 // Function to fetch content keys, optionally filtered by main heading
 function getContentKeysByMainHeading($conn, $mainHeading = null)
 {
@@ -358,18 +363,11 @@ if ($result = mysqli_query($conn, $history_sql)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Remove or fix this line -->
-    <!-- <link href="admin-styles.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="../css/admin-css.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
-<!-- Keep only one of these -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -617,6 +615,17 @@ if ($result = mysqli_query($conn, $history_sql)) {
                             Go to Media
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Pre-order Requests</h5>
+                    <p class="card-text">View customer pre-order submissions</p>
+                    <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#preorderModal">
+                        View Requests (<?php echo getPreorderCount($conn); ?>)
+                    </a>
                 </div>
             </div>
         </div>
@@ -925,7 +934,116 @@ if ($result = mysqli_query($conn, $history_sql)) {
         </div>
 
     </div>
+    <div class="modal fade" id="preorderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pre-order Requests</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Company</th>
+                                    <th>Email</th>
+                                    <th>Request Type</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $requests = $conn->query("SELECT * FROM preorder_requests ORDER BY submitted_at DESC");
+                                while ($row = $requests->fetch_assoc()):
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $row['id']; ?></td>
+                                        <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($row['company_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['help_option']); ?></td>
+                                        <td><?php echo date('M j, Y g:i a', strtotime($row['submitted_at'])); ?></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary view-details"
+                                                data-id="<?php echo $row['id']; ?>">View</button>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
+<script>
+    //javascript for pre-order form submission
+    document.getElementById('preorderForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // Validate form
+        if (!this.checkValidity()) {
+            event.stopPropagation();
+            this.classList.add('was-validated');
+            return;
+        }
+
+        // Submit form
+        fetch('process_preorder.php', {
+            method: 'POST',
+            body: new FormData(this)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Thank you for your pre-order!');
+                    window.location.href = 'index.php';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Network error: ' + error);
+            });
+    });
+</script>
+<script>
+    $(document).on('click', '.view-details', function () {
+        const id = $(this).data('id');
+        $.ajax({
+            url: 'get_preorder_details.php',
+            method: 'GET',
+            data: { id: id },
+            success: function (response) {
+                const details = `
+                <h5>${response.first_name} ${response.last_name}</h5>
+                <p><strong>Job Title:</strong> ${response.job_title}</p>
+                <p><strong>Company:</strong> ${response.company_name}</p>
+                <p><strong>Phone:</strong> ${response.phone_number}</p>
+                <p><strong>Email:</strong> ${response.email}</p>
+                <p><strong>Industry:</strong> ${response.industry}</p>
+                <p><strong>Employees:</strong> ${response.num_employees}</p>
+                <p><strong>Request Type:</strong> ${response.help_option}</p>
+                <p><strong>Additional Details:</strong><br>${response.additional_details || 'None'}</p>
+                <p><strong>Submitted:</strong> ${new Date(response.submitted_at).toLocaleString()}</p>
+            `;
+
+                Swal.fire({
+                    title: 'Pre-order Details',
+                    html: details,
+                    width: '700px'
+                });
+            }
+        });
+    });
+</script>
 <script>
     // In your media upload form script
     $('#mediaFile').on('change', function () {
