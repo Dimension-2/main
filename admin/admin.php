@@ -7,6 +7,40 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php"); // Correct: login.php is in the same directory (admin/)
     exit;
 }
+// Handle Clear All Requests
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
+    $delete_sql = "TRUNCATE TABLE preorder_requests";
+    if (mysqli_query($conn, $delete_sql)) {
+        $message = "<div class='alert alert-success'>All pre-order requests have been cleared!</div>";
+    } else {
+        $message = "<div class='alert alert-danger'>Error clearing requests: " . mysqli_error($conn) . "</div>";
+    }
+}
+// After the clear query succeeds
+// Handle Clear All Requests
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
+    // 1. Require the config file with proper path
+    require_once __DIR__ . '/../../config.php'; // Adjust path as needed
+
+    // 2. Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // 3. Define the SQL query
+    $delete_sql = "TRUNCATE TABLE preorder_requests";
+
+    // 4. Execute with error handling
+    if ($conn->query($delete_sql) === TRUE) {
+        $_SESSION['success_message'] = "All pre-order requests have been cleared successfully!";
+    } else {
+        $_SESSION['error_message'] = "Error clearing requests: " . $conn->error;
+    }
+
+    // 5. Redirect
+    header("Location: admin.php");
+    exit();
+}
 
 // Include config.php to get the database connection ($conn)
 require_once '../config.php'; // Adjust path based on your project structure
@@ -362,6 +396,7 @@ if ($result = mysqli_query($conn, $history_sql)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/admin-css.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -544,6 +579,13 @@ if ($result = mysqli_query($conn, $history_sql)) {
         });
     });
 </script>
+<?php if (isset($_SESSION['success_message'])): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+        <?= $_SESSION['success_message'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['success_message']); ?>
+<?php endif; ?>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -939,6 +981,10 @@ if ($result = mysqli_query($conn, $history_sql)) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Pre-order Requests</h5>
+                    <form method="post"
+                        onsubmit="return confirm('Are you sure you want to delete ALL pre-order requests?');">
+                        <button type="submit" name="clear_requests" class="btn btn-danger ms-2">Clear All</button>
+                    </form>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -961,16 +1007,17 @@ if ($result = mysqli_query($conn, $history_sql)) {
                                 while ($row = $requests->fetch_assoc()):
                                     ?>
                                     <tr>
-                                        <td><?php echo $row['id']; ?></td>
-                                        <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($row['company_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['help_option']); ?></td>
-                                        <td><?php echo date('M j, Y g:i a', strtotime($row['submitted_at'])); ?></td>
+                                        <td><?= $row['id'] ?></td>
+                                        <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']) ?></td>
+                                        <td><?= htmlspecialchars($row['company_name']) ?></td>
+                                        <td><?= htmlspecialchars($row['email']) ?></td>
+                                        <td><?= htmlspecialchars($row['help_option']) ?></td>
+                                        <td><?= date('M j, Y g:i a', strtotime($row['submitted_at'])) ?></td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary view-details"
-                                                data-id="<?php echo $row['id']; ?>">View</button>
+                                            <button class="btn btn-sm btn-primary view-details" data-id="<?= $row['id'] ?>"
+                                                data-bs-toggle="modal" data-bs-target="#detailsModal">
+                                                View
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
@@ -982,7 +1029,89 @@ if ($result = mysqli_query($conn, $history_sql)) {
         </div>
     </div>
 
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Request Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="requestDetails">
+                    <!-- Details will be loaded here via AJAX -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 </body>
+<script>
+    // Enhanced Clear Confirmation with AJAX and SweetAlert
+    $(document).on('submit', 'form[onsubmit]', function (e) {
+        e.preventDefault();
+        const form = this;
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will permanently delete ALL pre-order requests!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete all!',
+            cancelButtonText: 'Cancel',
+            backdrop: `
+            rgba(0,0,0,0.7)
+            url("/images/trash-icon.png")
+            center top
+            no-repeat
+        `,
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                    url: $(form).attr('action'),
+                    method: 'POST',
+                    data: $(form).serialize()
+                }).fail(error => {
+                    Swal.showValidationMessage(`
+                    Request failed: ${error.statusText}
+                `);
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Close the modal
+                $('#preorderModal').modal('hide');
+
+                // Show success message
+                Swal.fire({
+                    title: 'Cleared!',
+                    text: 'All pre-order requests have been deleted.',
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false
+                }).then(() => {
+                    // Refresh the table data without full page reload
+                    $.ajax({
+                        url: 'get_preorders.php',
+                        method: 'GET',
+                        success: function (data) {
+                            $('.table tbody').html(data);
+                        },
+                        error: function () {
+                            location.reload(); // Fallback to full reload
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>
 <script>
     //javascript for pre-order form submission
     document.getElementById('preorderForm').addEventListener('submit', function (event) {
@@ -1015,31 +1144,31 @@ if ($result = mysqli_query($conn, $history_sql)) {
     });
 </script>
 <script>
+    // View Details Functionality
     $(document).on('click', '.view-details', function () {
-        const id = $(this).data('id');
+        const requestId = $(this).data('id');
+
         $.ajax({
-            url: 'get_preorder_details.php',
-            method: 'GET',
-            data: { id: id },
+            url: 'get_request_details.php',
+            type: 'GET',
+            data: { id: requestId },
             success: function (response) {
                 const details = `
-                <h5>${response.first_name} ${response.last_name}</h5>
+                <p><strong>Name:</strong> ${response.first_name} ${response.last_name}</p>
                 <p><strong>Job Title:</strong> ${response.job_title}</p>
                 <p><strong>Company:</strong> ${response.company_name}</p>
                 <p><strong>Phone:</strong> ${response.phone_number}</p>
                 <p><strong>Email:</strong> ${response.email}</p>
                 <p><strong>Industry:</strong> ${response.industry}</p>
-                <p><strong>Employees:</strong> ${response.num_employees}</p>
-                <p><strong>Request Type:</strong> ${response.help_option}</p>
-                <p><strong>Additional Details:</strong><br>${response.additional_details || 'None'}</p>
+                <p><strong>Number of Employees:</strong> ${response.num_employees}</p>
+                <p><strong>Help Needed:</strong> ${response.help_option}</p>
+                <p><strong>Additional Details:</strong><br>${response.additional_details || 'None provided'}</p>
                 <p><strong>Submitted:</strong> ${new Date(response.submitted_at).toLocaleString()}</p>
             `;
-
-                Swal.fire({
-                    title: 'Pre-order Details',
-                    html: details,
-                    width: '700px'
-                });
+                $('#requestDetails').html(details);
+            },
+            error: function () {
+                $('#requestDetails').html('<div class="alert alert-danger">Could not load request details.</div>');
             }
         });
     });
