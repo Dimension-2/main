@@ -77,3 +77,34 @@
     line-height: 1.4;    /* Tighter line spacing */
     margin-top: 0.5rem;  /* Reduce top margin */
 }
+/* Beautiful View Panel Styling */
+#detailsModal .modal-body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 8px;
+    padding: 25px;
+}
+
+#requestDetails p {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#requestDetails p strong {
+    color: #4a6baf;
+    display: inline-block;
+    width: 160px;
+}
+
+#detailsModal .modal-header {
+    background: #4a6baf;
+    color: white;
+    border-bottom: none;
+}
+
+#detailsModal .modal-footer {
+    border-top: none;
+    background: #f8f9fa;
+}

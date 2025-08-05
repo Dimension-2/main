@@ -7,17 +7,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php"); // Correct: login.php is in the same directory (admin/)
     exit;
 }
-
-// Handle Clear All Requests (place this near the top after session_start())
+// Keep only this one and remove the others:
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
-    require_once __DIR__ . '/../config.php'; // Adjust path as needed
+    error_log("Clear requests form submitted");
+    require_once __DIR__ . '/../config.php'; // Adjust to your correct path
 
-    // Verify connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Execute query
     if ($conn->query("TRUNCATE TABLE preorder_requests") === TRUE) {
         $_SESSION['success_message'] = "All pre-order requests cleared successfully!";
     } else {
@@ -26,42 +24,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
 
     header("Location: admin.php");
     exit();
-}
-
-// // Handle Clear All Requests
-// if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
-//     $delete_sql = "TRUNCATE TABLE preorder_requests";
-//     if (mysqli_query($conn, $delete_sql)) {
-//         $message = "<div class='alert alert-success'>All pre-order requests have been cleared!</div>";
-//     } else {
-//         $message = "<div class='alert alert-danger'>Error clearing requests: " . mysqli_error($conn) . "</div>";
-//     }
-// }
-// After the clear query succeeds
+}// After the clear query succeeds
 // Handle Clear All Requests
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
-    // 1. Require the config file with proper path
-    require_once __DIR__ . '/../../config.php'; // Adjust path as needed
+// if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
+//     // 1. Require the config file with proper path
+//     require_once __DIR__ . '/../../config.php'; // Adjust path as needed
 
-    // 2. Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+//     // 2. Check connection
+//     if ($conn->connect_error) {
+//         die("Connection failed: " . $conn->connect_error);
+//     }
 
-    // 3. Define the SQL query
-    $delete_sql = "TRUNCATE TABLE preorder_requests";
+//     // 3. Define the SQL query
+//     $delete_sql = "TRUNCATE TABLE preorder_requests";
 
-    // 4. Execute with error handling
-    if ($conn->query($delete_sql) === TRUE) {
-        $_SESSION['success_message'] = "All pre-order requests have been cleared successfully!";
-    } else {
-        $_SESSION['error_message'] = "Error clearing requests: " . $conn->error;
-    }
+//     // 4. Execute with error handling
+//     if ($conn->query($delete_sql) === TRUE) {
+//         $_SESSION['success_message'] = "All pre-order requests have been cleared successfully!";
+//     } else {
+//         $_SESSION['error_message'] = "Error clearing requests: " . $conn->error;
+//     }
 
-    // 5. Redirect
-    header("Location: admin.php");
-    exit();
-}
+//     // 5. Redirect
+//     header("Location: admin.php");
+//     exit();
+// }
 
 // Include config.php to get the database connection ($conn)
 require_once '../config.php'; // Adjust path based on your project structure
@@ -754,8 +741,7 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
                         <div class="history-table-container mt-5">
                             <h3>Content Change History</h3>
-                            <form method="post" action="admin.php"
-                                onsubmit="return confirm('Are you sure you want to clear all history? This action cannot be undone.');">
+                            <form method="post" id="clearRequestsForm">
                                 <button type="submit" name="clear_history" class="btn btn-danger mb-3">Clear All
                                     History</button>
                             </form>
@@ -785,8 +771,7 @@ if ($result = mysqli_query($conn, $history_sql)) {
                                                     <td><?php echo htmlspecialchars($entry['changed_by']); ?></td>
                                                     <td><?php echo htmlspecialchars($entry['changed_at']); ?></td>
                                                     <td>
-                                                        <form method="post" action="admin.php" style="display:inline-block;"
-                                                            onsubmit="return confirm('Are you sure you want to revert this change? This will update the live content.');">
+                                                        <form method="post" id="clearPreordersForm">
                                                             <input type="hidden" name="history_id_to_redo"
                                                                 value="<?php echo htmlspecialchars($entry['id']); ?>">
                                                             <button type="submit" name="redo_last_change"
@@ -1071,80 +1056,30 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
 </body>
 <script>
-    $(document).on('submit', 'form[onsubmit]', function (e) {
+    $(document).on('submit', '#clearPreordersForm', function (e) {
         e.preventDefault();
-        const form = this;
 
         Swal.fire({
-            title: 'Are you sure?',
-            text: "This will permanently delete ALL pre-order requests!",
+            title: 'Clear All Requests?',
+            text: "This will permanently delete all pre-order data!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete all!',
-            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Yes, clear all!',
             backdrop: `
             rgba(0,0,0,0.7)
             url("/images/trash-icon.png")
             center top
             no-repeat
-        `,
-            showLoaderOnConfirm: true,
-            allowOutsideClick: () => !Swal.isLoading()
+        `
         }).then((result) => {
             if (result.isConfirmed) {
-                // Show loading state
-                Swal.showLoading();
-
-                // Submit via AJAX
-                $.ajax({
-                    url: $(form).attr('action'),
-                    method: 'POST',
-                    data: $(form).serialize(),
-                    success: function () {
-                        // Close the modal
-                        $('#preorderModal').modal('hide');
-
-                        // Show success message
-                        Swal.fire({
-                            title: 'Cleared!',
-                            text: 'All pre-order requests have been deleted.',
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK',
-                            allowOutsideClick: false
-                        }).then(() => {
-                            // Refresh the table data
-                            refreshPreordersTable();
-                        });
-                    },
-                    error: function (xhr) {
-                        Swal.fire(
-                            'Error!',
-                            'Failed to clear requests: ' + xhr.statusText,
-                            'error'
-                        );
-                    }
-                });
+                // Submit form normally (triggers PHP handler)
+                this.submit();
             }
         });
     });
-
-    // Separate function for refreshing the table
-    function refreshPreordersTable() {
-        $.ajax({
-            url: 'get_preorders.php',
-            method: 'GET',
-            success: function (data) {
-                $('.table tbody').html(data);
-            },
-            error: function () {
-                // Fallback to full page reload if AJAX fails
-                location.reload();
-            }
-        });
-    }
 </script>
 <script>
     //javascript for pre-order form submission
