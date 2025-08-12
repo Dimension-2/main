@@ -1132,6 +1132,33 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
 </body>
 <script>
+    // Add this to your existing JavaScript section
+$(document).on('submit', 'form[onsubmit*="contact"]', function(e) {
+    e.preventDefault();
+    
+    Swal.fire({
+        title: 'Clear All Contact Submissions?',
+        text: "This will permanently delete all contact form data!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, clear all!',
+        backdrop: `
+        rgba(0,0,0,0.7)
+        url("/images/trash-icon.png")
+        center top
+        no-repeat
+        `
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Submit form normally (triggers PHP handler)
+            this.submit();
+        }
+    });
+});
+</script>
+<script>
     $(document).on('submit', '#clearPreordersForm', function (e) {
         e.preventDefault();
 
