@@ -26,17 +26,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
     exit();
 }
 // Handle Clear Contact Submissions
+// --- Handle Form Submissions (POST) ---
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // First check for clear operations
+    if (isset($_POST['clear_contact_submissions'])) {
+        // This will be handled by the code at the top of the file
+    } elseif (isset($_POST['clear_requests'])) {
+        // This will be handled by the code at the top of the file
+    } elseif (isset($_POST['clear_history'])) {
+        // This will be handled by the code at the top of the file
+    }
+    // Then handle other POST operations
+    elseif (isset($_POST['update_content'])) {
+        // Your existing update content code
+    }
+    // Other POST handlers...
+
+    // Only redirect if it's not a clear operation
+    if (!isset($_POST['clear_contact_submissions']) && !isset($_POST['clear_requests']) && !isset($_POST['clear_history'])) {
+        header("Location: admin.php?status=content_managed&selected_main_heading=" . urlencode($selected_main_heading) . "&selected_key=" . urlencode($selected_key));
+        exit();
+    }
+}
+// Handle Clear Contact Submissions
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_contact_submissions'])) {
     error_log("Clear contact submissions form submitted");
     require_once __DIR__ . '/../config.php';
 
     if ($conn->connect_error) {
+        error_log("Connection failed: " . $conn->connect_error);
         die("Connection failed: " . $conn->connect_error);
     }
 
-    if ($conn->query("TRUNCATE TABLE contact_sub") === TRUE) {
+    $result = $conn->query("TRUNCATE TABLE contact_sub");
+    if ($result === TRUE) {
+        error_log("Successfully cleared contact submissions");
         $_SESSION['success_message'] = "All contact submissions cleared successfully!";
     } else {
+        error_log("Error clearing contact submissions: " . $conn->error);
         $_SESSION['error_message'] = "Error clearing contact submissions: " . $conn->error;
     }
 
@@ -1060,8 +1087,7 @@ if ($result = mysqli_query($conn, $history_sql)) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Contact Form Submissions</h5>
-                    <form method="post"
-                        onsubmit="return confirm('Are you sure you want to delete ALL contact submissions?');">
+                    <form method="post" id="clearContactForm" style="display:inline;">
                         <button type="submit" name="clear_contact_submissions" class="btn btn-danger ms-2">Clear
                             All</button>
                     </form>
@@ -1083,25 +1109,22 @@ if ($result = mysqli_query($conn, $history_sql)) {
                                 </tr>
                             </thead>
                             <tbody>
-                            <tbody>
                                 <?php
                                 $submissions = $conn->query("
-        SELECT 
-            id,
-            name,
-            phone,
-            IFNULL(email, 'Not provided') AS email,
-            IFNULL(message, 'No message') AS message,
-            submitted_at,
-            ip_address,
-            admin_email_sent,
-            user_email_sent
-        FROM contact_sub 
-        ORDER BY submitted_at DESC
-    ");
+                                SELECT 
+                                    id,
+                                    name,
+                                    phone,
+                                    IFNULL(email, 'Not provided') AS email,
+                                    IFNULL(message, 'No message') AS message,
+                                    submitted_at,
+                                    ip_address,
+                                    admin_email_sent,
+                                    user_email_sent
+                                FROM contact_sub 
+                                ORDER BY submitted_at DESC
+                            ");
 
-                                // Update the table header:
-                                
                                 while ($row = $submissions->fetch_assoc()): ?>
                                     <tr>
                                         <td><?= $row['id'] ?></td>
@@ -1132,31 +1155,42 @@ if ($result = mysqli_query($conn, $history_sql)) {
 
 </body>
 <script>
-    // Add this to your existing JavaScript section
-$(document).on('submit', 'form[onsubmit*="contact"]', function(e) {
-    e.preventDefault();
-    
-    Swal.fire({
-        title: 'Clear All Contact Submissions?',
-        text: "This will permanently delete all contact form data!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, clear all!',
-        backdrop: `
-        rgba(0,0,0,0.7)
-        url("/images/trash-icon.png")
-        center top
-        no-repeat
-        `
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Submit form normally (triggers PHP handler)
-            this.submit();
-        }
+    // Clear Contact Submissions Form
+    $(document).on('submit', '#clearContactForm', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Clear All Contact Submissions?',
+            text: "This will permanently delete all contact form data!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, clear all!',
+            backdrop: `
+            rgba(0,0,0,0.7)
+            url("/images/trash-icon.png")
+            center top
+            no-repeat
+            `
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Create a hidden form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'admin.php';
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'clear_contact_submissions';
+                input.value = '1';
+
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     });
-});
 </script>
 <script>
     $(document).on('submit', '#clearPreordersForm', function (e) {
