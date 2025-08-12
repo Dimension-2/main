@@ -24,31 +24,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
 
     header("Location: admin.php");
     exit();
-}// After the clear query succeeds
+}
+// Handle Clear Contact Submissions
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_contact_submissions'])) {
+    error_log("Clear contact submissions form submitted");
+    require_once __DIR__ . '/../config.php';
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    if ($conn->query("TRUNCATE TABLE contact_sub") === TRUE) {
+        $_SESSION['success_message'] = "All contact submissions cleared successfully!";
+    } else {
+        $_SESSION['error_message'] = "Error clearing contact submissions: " . $conn->error;
+    }
+
+    header("Location: admin.php");
+    exit();
+}
+// After the clear query succeeds
 // Handle Clear All Requests
-// if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['clear_requests'])) {
-//     // 1. Require the config file with proper path
-//     require_once __DIR__ . '/../../config.php'; // Adjust path as needed
-
-//     // 2. Check connection
-//     if ($conn->connect_error) {
-//         die("Connection failed: " . $conn->connect_error);
-//     }
-
-//     // 3. Define the SQL query
-//     $delete_sql = "TRUNCATE TABLE preorder_requests";
-
-//     // 4. Execute with error handling
-//     if ($conn->query($delete_sql) === TRUE) {
-//         $_SESSION['success_message'] = "All pre-order requests have been cleared successfully!";
-//     } else {
-//         $_SESSION['error_message'] = "Error clearing requests: " . $conn->error;
-//     }
-
-//     // 5. Redirect
-//     header("Location: admin.php");
-//     exit();
-// }
 
 // Include config.php to get the database connection ($conn)
 require_once '../config.php'; // Adjust path based on your project structure
@@ -672,14 +668,16 @@ if ($result = mysqli_query($conn, $history_sql)) {
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Pre-order Requests</h5>
-                    <p class="card-text">View customer pre-order submissions</p>
-                    <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#preorderModal">
-                        View Requests (<?php echo getPreorderCount($conn); ?>)
-                    </a>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Pre-order Requests</h5>
+                        <p class="card-text">View customer pre-order submissions</p>
+                        <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#preorderModal">
+                            View Requests (<?php echo getPreorderCount($conn); ?>)
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1062,6 +1060,11 @@ if ($result = mysqli_query($conn, $history_sql)) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Contact Form Submissions</h5>
+                    <form method="post"
+                        onsubmit="return confirm('Are you sure you want to delete ALL contact submissions?');">
+                        <button type="submit" name="clear_contact_submissions" class="btn btn-danger ms-2">Clear
+                            All</button>
+                    </form>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
