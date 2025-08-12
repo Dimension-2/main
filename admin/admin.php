@@ -91,6 +91,12 @@ function getAllMainHeadings($conn)
     }
     return $headings;
 }
+// Contact submissions count function  
+function getContactCount($conn)
+{
+    $result = $conn->query("SELECT COUNT(*) FROM contact_sub");
+    return $result->fetch_row()[0];
+}
 //pre-order count function  
 function getPreorderCount($conn)
 {
@@ -707,7 +713,20 @@ if ($result = mysqli_query($conn, $history_sql)) {
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Contact Submissions</h5>
+                        <p class="card-text">View customer contact form submissions</p>
+                        <a href="#" class="btn btn-info" data-bs-toggle="modal"
+                            data-bs-target="#contactSubmissionsModal">
+                            View Submissions (<?php echo getContactCount($conn); ?>)
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
 
     <div class="modal fade" id="contentManagementModal" tabindex="-1" aria-labelledby="contentManagementModalLabel"
