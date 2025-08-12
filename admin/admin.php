@@ -617,11 +617,15 @@ if ($result = mysqli_query($conn, $history_sql)) {
                             data-bs-target="#mediaManagementModal">Manage Media</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Logout</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#contactSubmissionsModal">Contact Submissions</a>
                     </li>
                     <li class="nav-item">
                         <button class="nav-link" id="history-tab" data-bs-toggle="tab"
                             data-bs-target="#history">History</button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -1052,6 +1056,75 @@ if ($result = mysqli_query($conn, $history_sql)) {
             </div>
         </div>
     </div>
+    </div>
+    <div class="modal fade" id="contactSubmissionsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contact Form Submissions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                    <th>IP</th>
+                                    <th>Email Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tbody>
+                                <?php
+                                $submissions = $conn->query("
+        SELECT 
+            id,
+            name,
+            phone,
+            IFNULL(email, 'Not provided') AS email,
+            IFNULL(message, 'No message') AS message,
+            submitted_at,
+            ip_address,
+            admin_email_sent,
+            user_email_sent
+        FROM contact_sub 
+        ORDER BY submitted_at DESC
+    ");
+
+                                // Update the table header:
+                                
+                                while ($row = $submissions->fetch_assoc()): ?>
+                                    <tr>
+                                        <td><?= $row['id'] ?></td>
+                                        <td><?= htmlspecialchars($row['name']) ?></td>
+                                        <td><?= htmlspecialchars($row['phone']) ?></td>
+                                        <td><?= htmlspecialchars($row['email']) ?></td>
+                                        <td><?= htmlspecialchars(substr($row['message'], 0, 50)) . (strlen($row['message']) > 50 ? '...' : '') ?>
+                                        </td>
+                                        <td><?= date('M j, Y g:i a', strtotime($row['submitted_at'])) ?></td>
+                                        <td><?= $row['ip_address'] ?></td>
+                                        <td>
+                                            Admin: <?= $row['admin_email_sent'] ? '✅' : '❌' ?><br>
+                                            User:
+                                            <?= $row['email'] != 'Not provided' ? ($row['user_email_sent'] ? '✅' : '❌') : 'N/A' ?>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>
